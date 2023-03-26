@@ -54,12 +54,14 @@ export namespace RoomServices {
         return false;
     }
 
-    export const addBot = (roomCode:string, bot: Bot): boolean => {
+    // -------------- BOT -------------
+
+    export const addBot = (roomCode:string, bot: any): boolean => {
         const room = getRoomByID(roomCode);
         if (room) {
             switch (bot.type) {
                 case "spam":
-                    const spamBot = new SpamBot(bot.name);
+                    const spamBot = new SpamBot(bot.name,bot.message);
                     room.bots.push(spamBot);
                     break;
             
@@ -67,6 +69,20 @@ export namespace RoomServices {
                     return false;
             }
             return true;
+        }
+        return false;
+    }
+
+    // Les fonctions dessous peuvent être surement optimisées
+
+    export const connectBot = (roomCode:string, botToken: string): boolean =>{
+        const room = getRoomByID(roomCode);
+        if (room) {
+            const bot = getBot(room,botToken);
+            if (bot) {
+                bot.connect(roomCode,room.link);
+                return true;
+            }
         }
         return false;
     }
@@ -83,16 +99,30 @@ export namespace RoomServices {
         return false;
     }
 
-    export const connectBot = (roomCode:string, botToken: string): boolean =>{
+    export const stopBot = (roomCode:string, botToken: string): boolean =>{
         const room = getRoomByID(roomCode);
         if (room) {
             const bot = getBot(room,botToken);
             if (bot) {
-                bot.connect(roomCode,room.link);
+                bot.stop();
                 return true;
             }
         }
         return false;
     }
+
+    export const disconnectBot = (roomCode:string, botToken: string): boolean =>{
+        const room = getRoomByID(roomCode);
+        if (room) {
+            const bot = getBot(room,botToken);
+            if (bot) {
+                bot.disconnect();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
 
 }

@@ -11,8 +11,11 @@ export interface Bot{
     name: string,
     status: BotStatus,
     token: string,
-    interval: NodeJS.Timer | null,
 
-    connect(roomCode: string,url: string),
-    start()
+    connect(roomCode: string,url: string): void,
+    disconnect(): void,
+    start(): void,
+    stop(): void,
+    setStatus(status: BotStatus): void,
+    toJSON(): any
 }
