@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { RoomServices } from "../services/room";
+import { BotAction } from "../models/bots/Bot";
 
 const router = express.Router();
 
@@ -35,28 +36,11 @@ router.put("/:id/bot", (req: Request, res: Response) => {
 });
 
 router.post("/:id/bot/:botToken/:action", (req: Request, res: Response) => {
-    const roomId = req.params.id;
-    const botToken = req.params.botToken;
-    const action = req.params.action;
+    const roomId:string = req.params.id;
+    const botToken:string = req.params.botToken;
+    const action:BotAction = BotAction[req.params.action];
 
-    switch (action) {
-        case "connect":
-            RoomServices.connectBot(roomId, botToken);
-            break;
-        case "disconnect":
-            RoomServices.disconnectBot(roomId, botToken);
-            break;
-        case "start":
-            RoomServices.startBot(roomId, botToken);
-            break;
-        case "stop":
-            RoomServices.stopBot(roomId, botToken);
-            break;
-        default:
-            res.status(400).json({ error: "Invalid action" });
-            break;
-    }
-    res.json({ "success": true });
+    res.json(RoomServices.manageBot(roomId,botToken,action));
 });
 
 

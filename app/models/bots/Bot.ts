@@ -5,6 +5,13 @@ export enum BotStatus{
     ACTIVE = "active"
 }
 
+export enum BotAction{
+    START = "start",
+    STOP = "stop",
+    DISCONNECT = "disconnect",
+    CONNECT = "connect"
+}
+
 export interface Bot{
     io: any,
     type: string,

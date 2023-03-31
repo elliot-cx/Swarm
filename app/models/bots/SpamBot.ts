@@ -56,12 +56,12 @@ export default class SpamBot implements Bot {
         });
 
         // Bot get ban (mostly)
-        this.io.on("kicked",()=>{
+        this.io.on("kicked",(reason: any)=>{
             if (this.status == BotStatus.ACTIVE) {
                 this.stop();
             }
             this.io.close();
-            this.status = BotStatus.DISCONNECTED;
+            this.status = BotStatus.BANNED;
         });
 
         this.io.on("chat", (authProfile: any, message: string) => {
@@ -84,7 +84,7 @@ export default class SpamBot implements Bot {
         this.status = BotStatus.ACTIVE;
         this.interval = setInterval(()=>{
             this.io.emit("chat",this.message);
-        },3000);
+        },1100);
     }
 
     stop() {
