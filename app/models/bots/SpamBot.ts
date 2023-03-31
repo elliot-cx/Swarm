@@ -1,5 +1,5 @@
 import { Bot, BotStatus } from './Bot';
-import { Utils } from '../../utils';
+import { Utils } from '../../utils/utils';
 
 export default class SpamBot implements Bot {
     io: any;
