@@ -1,8 +1,9 @@
 import { Bot, BotStatus } from './Bot';
 import { Utils } from '../../utils/utils';
+import { Sockets } from '../../sockets/sockets';
 
 export default class SpamBot implements Bot {
-    io: any;
+    socket: any;
     type: string;
     name: string;
     status: BotStatus;
@@ -10,8 +11,10 @@ export default class SpamBot implements Bot {
     interval: NodeJS.Timer | null;
     message: string;
 
+    private roomCode: string;
+
     constructor(name: string, message: string) {
-        this.io = require('socket.io-client');
+        this.socket = require('socket.io-client');
         this.type = "spam";
         this.token =  Utils.randomString();
         this.name = name;
@@ -23,16 +26,17 @@ export default class SpamBot implements Bot {
     // Change la façon dont l'objet est parsé en JSON
     // Ici on veut exclure des propriétés qui ne doivent pas être renvoyées par l'API
     toJSON() {
-        const {io, interval, ...json} = this;
+        const {socket, interval, ...json} = this;
         return json;
     }
 
     setStatus(status: BotStatus) {
         this.status = status;
+        Sockets.emitRoom(this.roomCode,"status",this.status);
     }
 
     connect(roomCode: string,url: string){
-        this.io = this.io.connect(url);
+        this.socket = this.socket.connect(url);
 
         const joinData = {
             "roomCode": roomCode,
@@ -41,49 +45,48 @@ export default class SpamBot implements Bot {
             "language": "fr-FR"
         };
 
-        this.io.on("connect",()=>{
-            this.io.emit("joinRoom", joinData, (data:any) => {
-                this.status = BotStatus.CONNECTED;
+        this.socket.on("connect",()=>{
+            this.socket.emit("joinRoom", joinData, (data:any) => {
+                this.setStatus(BotStatus.CONNECTED);
             });
         });
 
-        this.io.on("disconnect",()=>{
+        this.socket.on("disconnect",()=>{
             if (this.status == BotStatus.ACTIVE) {
                 this.stop();
             }
-            this.io.close();
-            this.status = BotStatus.DISCONNECTED;
+            this.socket.close();
+            this.setStatus(BotStatus.DISCONNECTED);
         });
 
         // Bot get ban (mostly)
-        this.io.on("kicked",(reason: any)=>{
+        this.socket.on("kicked",(reason: any)=>{
             if (this.status == BotStatus.ACTIVE) {
                 this.stop();
             }
-            this.io.close();
-            this.status = BotStatus.BANNED;
+            this.socket.close();
+            this.setStatus(BotStatus.BANNED);
         });
 
-        this.io.on("chat", (authProfile: any, message: string) => {
+        this.socket.on("chat", (authProfile: any, message: string) => {
             console.log(message);
         });
         
-        this.io.on("connect_error",(err:any)=>{
-            this.status = BotStatus.DISCONNECTED;
+        this.socket.on("connect_error",(err:any)=>{
+            this.setStatus(BotStatus.DISCONNECTED);
+            // Auto reconnect
+            this.connect(roomCode,url);
         })
     }
 
     disconnect() {
-        if (this.io.connected) {
-            this.io.close();
-            this.setStatus(BotStatus.DISCONNECTED);
-        }
+        this.socket.close();
     }
 
     start() {
-        this.status = BotStatus.ACTIVE;
+        this.setStatus(BotStatus.ACTIVE);
         this.interval = setInterval(()=>{
-            this.io.emit("chat",this.message);
+            this.socket.emit("chat",this.message);
         },1100);
     }
 
@@ -91,7 +94,7 @@ export default class SpamBot implements Bot {
         if (this.interval) {
             clearInterval(this.interval);
             this.interval = null;
-            this.status = BotStatus.CONNECTED;
+            this.setStatus(BotStatus.CONNECTED);
         }
     }
 }

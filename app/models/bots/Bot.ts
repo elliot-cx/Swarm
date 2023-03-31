@@ -13,7 +13,7 @@ export enum BotAction{
 }
 
 export interface Bot{
-    io: any,
+    socket: any,
     type: string,
     name: string,
     status: BotStatus,
