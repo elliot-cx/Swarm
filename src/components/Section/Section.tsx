@@ -70,7 +70,6 @@ export default function Section({
               : null}
               { contentChildrenNodes 
                 ? contentChildrenNodes.map((contentChildrenNode: ReactNode, contentChildrenKey: number) => {
-                    console.log('oui !!');
                     return <div key={contentChildrenKey}>{contentChildrenNode}</div>;
                 })
                 : null}
