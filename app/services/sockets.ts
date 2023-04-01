@@ -1,14 +1,14 @@
 import { Server } from 'http';
 import { Socket } from 'socket.io';
-import { RoomServices } from '../services/room';
+import { RoomServices } from './room';
 
-export namespace Sockets{
+export namespace SocketIOService{
 
-    const io = require('socket.io');
+    var io = require('socket.io');
 
     export function initSockets(server: Server) {
         // Initialisation du serveur
-        io(server);
+        io = io(server);
         // Connexion du client React
         io.on('connection', (socket: Socket) => {
     

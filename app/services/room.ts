@@ -94,6 +94,7 @@ export namespace RoomServices {
                 break;
             case BotAction.STOP:
                 bot.stop();
+                break;
             default:
                 return false;
         }

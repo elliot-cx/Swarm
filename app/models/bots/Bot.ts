@@ -1,3 +1,7 @@
+import { SocketIOService } from "../../services/sockets";
+import { Utils } from "../../utils/utils";
+import { Authentification } from "../authentification"
+
 export enum BotStatus{
     CONNECTED = "connected",
     BANNED = "banned",
@@ -12,17 +16,85 @@ export enum BotAction{
     CONNECT = "connect"
 }
 
-export interface Bot{
-    socket: any,
-    type: string,
-    name: string,
-    status: BotStatus,
-    token: string,
+export class Bot{
 
-    connect(roomCode: string,url: string): void,
-    disconnect(): void,
-    start(): void,
-    stop(): void,
-    setStatus(status: BotStatus): void,
-    toJSON(): any
+    socket: any;
+    type: string;
+    name: string;
+    status: BotStatus;
+    token: string;
+    auth: Authentification | null;
+
+    private roomCode: string | undefined;
+
+    constructor(name: string){
+        this.socket = require('socket.io-client');
+        this.type = "spam";
+        this.token =  Utils.randomString();
+        this.auth = null;
+        this.name = name;
+        this.status = BotStatus.DISCONNECTED;
+    }
+
+    // Change la façon dont l'objet est parsé en JSON
+    // Ici on veut exclure des propriétés qui ne doivent pas être renvoyées par l'API
+    toJSON(){}
+
+    onStatusChanged(status: BotStatus, data?: any){}
+
+    setStatus(status: BotStatus,data?: any) {
+        this.status = status;
+        this.onStatusChanged(status,data);
+        if (this.roomCode) {
+            SocketIOService.emitRoom(this.roomCode,"status",status);
+        }
+    }
+
+    connect(roomCode: string,url: string){
+        this.socket = this.socket.connect(url);
+
+        const joinData = {
+            "roomCode": roomCode,
+            "userToken": this.token,
+            "nickname": this.name,
+            "auth": null,
+            "language": "en-EN"
+        };
+
+        this.socket.on("connect",()=>{
+            this.socket.emit("joinRoom", joinData, (data:any) => {
+                this.setStatus(BotStatus.CONNECTED,data);
+            });
+        });
+
+        this.socket.on("disconnect",()=>{
+            this.setStatus(BotStatus.DISCONNECTED);
+            this.socket.removeAllListeners();
+        });
+
+        // Bot get ban (mostly)
+        this.socket.on("kicked",(reason: any)=>{
+            if (this.status == BotStatus.ACTIVE) {
+                this.stop();
+            }
+            this.socket.close();
+            this.setStatus(BotStatus.BANNED);
+        });
+
+        // this.socket.on("chat", (authProfile: any, message: string) => {
+        //     console.log(message);
+        // });
+
+        this.socket.on("connect_error",(err:any)=>{
+            this.setStatus(BotStatus.DISCONNECTED);
+            // Auto reconnect
+            this.connect(roomCode,url);
+        });
+    }
+
+    disconnect() {this.socket.close();}
+
+    start() {this.setStatus(BotStatus.ACTIVE);}
+
+    stop() {this.setStatus(BotStatus.CONNECTED);}
 }

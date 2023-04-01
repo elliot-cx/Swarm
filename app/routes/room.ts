@@ -38,9 +38,9 @@ router.put("/:id/bot", (req: Request, res: Response) => {
 router.post("/:id/bot/:botToken/:action", (req: Request, res: Response) => {
     const roomId:string = req.params.id;
     const botToken:string = req.params.botToken;
-    const action:BotAction = BotAction[req.params.action];
+    const action:BotAction = req.params.action as BotAction;
 
-    res.json(RoomServices.manageBot(roomId,botToken,action));
+    res.json({ "success": RoomServices.manageBot(roomId,botToken,action)});
 });
 
 

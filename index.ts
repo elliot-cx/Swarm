@@ -1,13 +1,13 @@
 import express from "express";
 import { createServer } from "http";
-import { Sockets } from "./app/sockets/sockets";
+import { SocketIOService } from "./app/services/sockets";
 import router from "./app/app";
 
-const PORT = 8080;
+export const PORT = 8080;
 const app = express();
 
 const server = createServer(app);
-Sockets.initSockets(server);
+SocketIOService.initSockets(server);
 
 app.use(express.static('./app/public'));
 app.use(express.json());
