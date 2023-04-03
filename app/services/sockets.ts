@@ -13,9 +13,11 @@ export namespace SocketIOService{
         io.on('connection', (socket: Socket) => {
     
             // Le client veut écouter les MAJ des bots
-            socket.on('join', (roomCode: string,  callback: void) => {
+            socket.on('join', (roomCode: string,  callback: Function) => {
                 const room = RoomServices.getRoomByID(roomCode);
-                if (room) socket.join(room.id);
+                if (room) {
+                    socket.join(room.id);
+                }
             });
     
             // Déconnexion

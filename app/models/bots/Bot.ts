@@ -46,12 +46,13 @@ export class Bot{
         this.status = status;
         this.onStatusChanged(status,data);
         if (this.roomCode) {
-            SocketIOService.emitRoom(this.roomCode,"status",status);
+            SocketIOService.emitRoom(this.roomCode,"status",this);
         }
     }
 
     connect(roomCode: string,url: string){
         this.socket = this.socket.connect(url);
+        this.roomCode = roomCode;
 
         const joinData = {
             "roomCode": roomCode,

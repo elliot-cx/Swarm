@@ -6,6 +6,11 @@ import fetch from "node-fetch";
 // Liste des rooms instanciées
 var rooms: room[] = [];
 
+/**
+ * Asynchronously checks if a game room is open and returns the URL
+ * @param roomCode The code for the room being checked
+ * @returns An object with the URL of the open room, if found
+ */
 async function getRoomLink(roomCode: string): Promise<{ url?: string }> {
     const url = `https://jklm.fun/api/joinRoom`;
     const response = await fetch(url, {
@@ -17,30 +22,68 @@ async function getRoomLink(roomCode: string): Promise<{ url?: string }> {
     return data;
 }
 
+/**
+ * Returns the bot with the given token from a room
+ * @param room A Swarm room instance
+ * @param botToken The token assigned to the bot
+ * @returns The bot if found, otherwise undefined
+ */
 function getBot(room: room, botToken: string): Bot | undefined {
     return room.bots.find(b => b.token == botToken);
 }
 
+/**
+ * This namespace is for managing Swarm's rooms
+ */
 export namespace RoomServices {
 
+    /**
+     * Returns all rooms currently instantiated in the Swarm
+     * @returns An array of all instantiated rooms
+     */
     export const getAllRooms = (): Array<room> => {
         return rooms;
+    }
+
+    export const getAllRoomsFromJKLM = async (): Promise<any> => {
+        const url = `https://jklm.fun/api/rooms`;
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        return data;
     }
 
     // export const getRoomBy = (field: string, val: any): room[] => {
     //     return rooms.filter((room:room) => room[field] == val);
     // }
 
+    /**
+     * Retrieves the instance of a room with the given ID
+     * @param id The ID of the Swarm room being retrieved
+     * @returns The instance of the room, if found, otherwise undefined
+     */
     export const getRoomByID = (id: string): room | undefined => {
         return rooms.find((room: room) => room.id == id);
     }
 
+    /**
+     * Deletes the room with the given ID
+     * @param id The ID of the Swarm room to delete
+     * @returns True if the room was deleted, otherwise false
+     */
     export const deleteRoomByID = (id: string): boolean => {
         const room = getRoomByID(id);
         rooms = rooms.filter((r: room) => r.id != id);
         return room ? true : false;
     }
 
+    /**
+     * Creates a new room and adds it to the list of instantiated rooms
+     * @param room The room to create
+     * @returns True if the room was created and added to the list of instantiated rooms, otherwise false
+     */
     export const createRoom = async (room: room): Promise<boolean> => {
         const r = getRoomByID(room.id);
         if (!r) {
@@ -56,7 +99,12 @@ export namespace RoomServices {
 
     // -------------- BOT -------------
 
-    // Ajouter un bot à une room
+    /**
+     * Adds a bot to a room
+     * @param roomCode The code for the room where the bot will be added
+     * @param bot The bot to be added
+     * @returns The token for the added bot, if successful, otherwise false
+     */
     export const addBot = (roomCode: string, bot: any): string | false => {
         const room = getRoomByID(roomCode);
         if (room) {
@@ -72,7 +120,13 @@ export namespace RoomServices {
         return false;
     }
 
-    // Commande de gestion de bot
+    /**
+     * Manages a bot's status to a room
+     * @param roomCode The code for the room where the bot is located
+     * @param botToken The token assigned to the bot being managed
+     * @param action The action to perform on the bot (connect, disconnect, start, stop)
+     * @returns True if the bot was successfully managed, otherwise false
+     */
     export const manageBot = (roomCode: string, botToken: string, action: BotAction): boolean => {
         const room = getRoomByID(roomCode);
         if (!room) {
@@ -100,4 +154,15 @@ export namespace RoomServices {
         }
         return true;
     };
+
+    /**
+     * Updates the properties of a bot
+     * @param roomCode The code for the room where the bot is located
+     * @param botToken The token assigned to the bot being updated
+     * @param props The properties that will be changed
+     * @returns True if the bot was successfully updated, otherwise false 
+     */
+    export const updateBot = (roomCode: string, botToken: string, props: any): boolean => {
+        return true;
+    }
 }

@@ -5,8 +5,13 @@ import { BotAction } from "../models/bots/Bot";
 const router = express.Router();
 
 // Récupère toutes les rooms instanciées
-router.get("/", (req: Request, res: Response) => {
-    res.json(RoomServices.getAllRooms());
+router.get("/", async (req: Request, res: Response) => {
+    const provider = req.query.provider as string;
+    if (provider == "JKLM") {
+        res.json(await RoomServices.getAllRoomsFromJKLM());
+    }else{
+        res.json(RoomServices.getAllRooms());
+    }
 });
 
 // Créer une room
@@ -33,6 +38,7 @@ router.post("/:id/bot", (req: Request, res: Response) => {
 
 // Modifier les propriétés du BOT
 router.put("/:id/bot", (req: Request, res: Response) => {
+    
 });
 
 router.post("/:id/bot/:botToken/:action", (req: Request, res: Response) => {
