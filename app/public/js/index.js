@@ -9,6 +9,6 @@ socket.on("connect",()=>{
     console.log("Connected");
 });
 
-socket.on("status",(status)=>{
+socket.on("status",(status,data)=>{
     console.log(status);
 });
