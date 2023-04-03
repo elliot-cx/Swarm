@@ -3,12 +3,12 @@ import { BotAuthentificationService } from "../services/botAuthentification";
 
 const router = express.Router();
 
-// Récupérer l'authentification actuelle
+// Get current used auth system
 router.get('/', (_: Request, res: Response) => {
     res.json({ "success": BotAuthentificationService.getAuthentification() })
 });
 
-// Modifier l'authentification
-router.post('/', (_: Request, res: Response) => {
-
+// Update auth informations
+router.post('/', (req: Request, res: Response) => {
+    res.json({"sucess": BotAuthentificationService.setAuthentification(req.body)})
 });

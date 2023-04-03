@@ -5,13 +5,7 @@
  */
 import { PORT } from "../..";
 import { Authentification } from "../models/authentification";
-
-var auth: Authentification = {
-    service: 'discord', 
-    username: 'BlueWhite#2744', 
-    token: '6LJPDwGZa8wV7F55ngEtSftf50OWzf', 
-    expiration: 1680555557560
-}
+import { DataService } from "./data";
 
 // Front side
 const discordClientId = 688126093424721954n;
@@ -26,6 +20,8 @@ export namespace BotAuthentificationService{
      * @returns The current authentication information or null if it has expired.
      */
     export function getAuthentification() {
+        // Get Auth
+        const auth = DataService.getDataInstance("auth") as Authentification
         // Check expiration
         if (new Date() > new Date(auth.expiration * 1000)) {
             // On doit rafraichir le token discord
@@ -41,6 +37,10 @@ export namespace BotAuthentificationService{
      * @param authentification - The new authentication information for the bot.
      */
     export function setAuthentification(authentification: Authentification) {
-        auth = authentification;
+        if(authentification){
+            DataService.updateDataInstance("auth",authentification);
+            return true;
+        }
+        return false;
     }
 }
