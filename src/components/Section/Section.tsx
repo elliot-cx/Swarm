@@ -9,7 +9,6 @@ type Link={
   id?:string,
   text?:string,
   description?:string,
-  iconId?:string,
   classNames?:string[],
   onClickEvent?:MouseEventHandler<HTMLAnchorElement>
   onMouseHoverEvent?:any,
@@ -19,19 +18,18 @@ type Link={
 type Props = {
 // Typed used for the props of this component, it includes an html id, <h1> title, <h2> title, <p> text,
 // an array of links <a> and functions to run  
-className?:any
-linksDivClasses?:string[],
+classNames?:string[]
 id?:string
+linksDivClasses?:string[],
 title1?:string
 title2?:string
 text?:string 
 links?:Array<Link>,
 contentChildrenNodes?:Array<ReactNode>,
 childrenNodes?:Array<ReactNode>,
-isGrowing?:boolean
 }
 export default function Section({
-  className,
+  classNames,
   linksDivClasses,
   id,
   links,
@@ -40,7 +38,6 @@ export default function Section({
   title2,
   childrenNodes,
   contentChildrenNodes,
-  isGrowing = true,
 }: Props) {
 
   const getClassNameString = (classNames: string[] | undefined): string => {
@@ -49,19 +46,25 @@ export default function Section({
   };
   
   return (
-    <div className={`${className ? styles[className] : undefined} ${isGrowing ? styles.growingSection : styles.section}`} id={id ? styles[id] : undefined}>
-        { title1 ? <h1 className='sectionTitle'>{ title1 }</h1> : null }
+    <div className={`${getClassNameString(classNames)} ${styles.section}`} id={id ? styles[id] : undefined}>
+        { title1 
+        ? <> 
+          <h1 className={styles.sectionTitle}>{ title1 }</h1>
+          <div className={styles.verticalSeparator}></div> 
+        </> 
+        : null }
+        
         { title2 ||  text || links ? 
           <div className={styles.content}>
-              { title2 ? <h2>{title2}</h2> : null }
-              {  text ? <p>{text}</p> : null }
+              { title2 ? <h2 className={styles.sectionTitle2}>{title2}</h2> : null }
+              {  text ? <p className={styles.sectionText}>{text}</p> : null }
               { links 
                 ? <div className={`${styles.linksDiv} ${getClassNameString(linksDivClasses)}`}>
                   {links.map((link: Link, index: number) => {
                     return(
-                      <a key={index} className={getClassNameString(link.classNames)} id={link.id ? styles[link.id] : undefined} href={link.route} 
+                      <a key={index} className={styles.link + getClassNameString(link.classNames)} id={link.id ? styles[link.id] : undefined} href={link.route} 
                       onMouseOver={link?.onMouseHoverEvent} onMouseEnter={link?.onMouseEnter} onMouseLeave={link?.onMouseLeave} onClick={link?.onClickEvent}>
-                        {link.text}
+                        <p>{link.text}</p>
                         {link.description ? <p className={styles.linkDescription}>{link.description}</p> : null}
                       </a>
                     )
