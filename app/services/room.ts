@@ -45,6 +45,10 @@ export namespace RoomServices {
         return rooms;
     }
 
+    /**
+     * Returns all rooms currently available from a provider such as JKLM.FUN
+     * @returns An array of all available rooms from the provider
+     */
     export const getAllRoomsFromJKLM = async (): Promise<any> => {
         const url = `https://jklm.fun/api/rooms`;
         const response = await fetch(url, {
