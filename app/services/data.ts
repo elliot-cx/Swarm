@@ -15,7 +15,7 @@ export namespace DataService {
      * @returns The JSON object read from the file or an empty object.
      */
     function readJSON(filename: string): JSONData {
-        const filePath = path.join(dataDirectory, `${filename}.json`);
+        const filePath = path.resolve(__dirname,path.join(dataDirectory, `${filename}.json`));
         if (fs.existsSync(filePath)) {
             const fileContents = fs.readFileSync(filePath, 'utf-8');
             return JSON.parse(fileContents);
@@ -31,7 +31,7 @@ export namespace DataService {
      * @param data The JSON object to write to the file.
      */
     function writeJSON(filename: string, data: JSONData) {
-        const filePath = path.join(dataDirectory, `${filename}.json`);
+        const filePath = path.resolve(__dirname,path.join(dataDirectory, `${filename}.json`));
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     }
 

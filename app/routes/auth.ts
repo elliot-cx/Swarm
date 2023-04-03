@@ -12,3 +12,5 @@ router.get('/', (_: Request, res: Response) => {
 router.post('/', (req: Request, res: Response) => {
     res.json({"sucess": BotAuthentificationService.setAuthentification(req.body)})
 });
+
+export default router;
