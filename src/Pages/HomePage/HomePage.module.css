@@ -1,0 +1,6 @@
+#homeRoot{
+    padding:0.5em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+}
