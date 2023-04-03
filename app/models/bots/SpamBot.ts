@@ -20,7 +20,7 @@ export default class SpamBot extends Bot {
         switch (status) {
             case BotStatus.ACTIVE:
                 this.interval = setInterval(() => {
-                    this.socket.emit("chat", this.message);
+                    this.emit("chat", this.message);
                 }, 1200);
                 break;
             default:

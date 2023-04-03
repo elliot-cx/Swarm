@@ -50,6 +50,12 @@ export class Bot{
         }
     }
 
+    emit(event: string, data: any){
+        if (this.socket && this.socket.connected && this.roomCode) {
+            this.socket.emit(event,data);
+        }
+    }
+
     connect(roomCode: string,url: string){
         this.socket = this.socket.connect(url);
         this.roomCode = roomCode;
@@ -87,6 +93,7 @@ export class Bot{
         // });
 
         this.socket.on("connect_error",(err:any)=>{
+            console.log(err);
             this.setStatus(BotStatus.DISCONNECTED);
             // Auto reconnect
             this.connect(roomCode,url);
