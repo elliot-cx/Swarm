@@ -5,7 +5,7 @@
     align-items: flex-start;
     justify-content: center;
 }
-.titleAccent{
+b{
     color:#9e4646;
 }
 *:hover > * > .titleAccent{
