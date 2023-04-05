@@ -1,6 +1,15 @@
 #homeRoot{
     padding:0.5em;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    place-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+}
+.titleAccent{
+    color:#9e4646;
+}
+*:hover > * > .titleAccent{
+    background-color: rgba(0,0,0,0.4);
+    padding:0.2em;
+    border-radius: 0.2em;
 }
