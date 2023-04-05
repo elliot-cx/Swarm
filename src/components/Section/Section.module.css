@@ -7,7 +7,7 @@
     border-radius: 0.5em;
     box-shadow: inset 0px 0px 15px 5px black;
     background-color: rgba(0,0,0,0.1);
-    width: calc(100% - 5em);
+    width: clamp(40%,45%,90%);
     align-items: center;
     justify-content: center;
     display: flex;
@@ -40,4 +40,11 @@
     border-bottom: 1px solid rgba(255,255,255,0.1);
     border-color: rgba(255,255,255,0.2);
     width: 80%;
+}
+.content{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
