@@ -6,5 +6,4 @@ export default interface Room{
     nbPlayers: number,
     isActive: boolean,
     link: string,
-    bots: Bot[];
 }
