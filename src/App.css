@@ -1,12 +1,11 @@
 #root{
   color: white;
   background-color: rgb(10,10,10);
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   margin:0px;
   top: 0px;
-  height: 100vh;
-  position: fixed;
+  /* position: fixed; */
   opacity: 0.95;
   background-image: 
     linear-gradient(30deg, rgb(25,25,25) 12%, transparent 12.5%, transparent 87%, rgb(25,25,25) 87.5%, rgb(25,25,25)),
