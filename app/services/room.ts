@@ -1,4 +1,5 @@
-import { Bot, BotAction } from "../models/bots/Bot";
+import { Bot, BotAction, BotStatus, BotType } from "../models/bots/Bot";
+import ResponderBot from "../models/bots/ResponderBot";
 import SpamBot from "../models/bots/spamBot";
 import { room } from "../models/room";
 import fetch from "node-fetch";
@@ -113,10 +114,14 @@ export namespace RoomServices {
         const room = getRoomByID(roomCode);
         if (room) {
             switch (bot.type) {
-                case "spam":
+                case BotType.SPAM:
                     const spamBot = new SpamBot(bot.name, bot.message);
                     room.bots.push(spamBot);
                     return spamBot.token;
+                case BotType.RESPONDER:
+                    const responderBot = new ResponderBot(bot.name);
+                    room.bots.push(responderBot);
+                    return responderBot.token;
                 default:
                     return false;
             }

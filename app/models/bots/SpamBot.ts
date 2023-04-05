@@ -1,7 +1,8 @@
-import { Bot, BotStatus } from "./Bot";
+import { Bot, BotStatus, BotType } from "./Bot";
 
 export default class SpamBot extends Bot {
 
+    type: BotType;
     interval: NodeJS.Timer | null;
     message: string;
 
@@ -9,6 +10,7 @@ export default class SpamBot extends Bot {
         super(name);
         this.message = message;
         this.interval = null;
+        this.type = BotType.SPAM;
     }
 
     toJSON() {
