@@ -1,14 +1,21 @@
-import { Bot, BotStatus } from "./Bot";
+import { Bot, BotStatus, BotType } from "./Bot";
+
+// Define bot properties
+type SpamBotProps = {
+    message: string,
+}
 
 export default class SpamBot extends Bot {
 
+    type: BotType;
     interval: NodeJS.Timer | null;
     message: string;
 
-    constructor(name: string, message: string) {
+    constructor(name: string, {message}: SpamBotProps) {
         super(name);
         this.message = message;
         this.interval = null;
+        this.type = BotType.SPAM;
     }
 
     toJSON() {

@@ -1,10 +1,11 @@
-import { Bot, BotAction } from "../models/bots/Bot";
+import { Bot, BotAction, BotStatus, BotType } from "../models/bots/Bot";
+import ResponderBot from "../models/bots/ResponderBot";
 import SpamBot from "../models/bots/spamBot";
-import { room } from "../models/room";
+import { Room } from "../models/room";
 import fetch from "node-fetch";
 
 // Liste des rooms instanciées
-var rooms: room[] = [];
+var rooms: Room[] = [];
 
 /**
  * Asynchronously checks if a game room is open and returns the URL
@@ -28,7 +29,7 @@ async function getRoomLink(roomCode: string): Promise<{ url?: string }> {
  * @param botToken The token assigned to the bot
  * @returns The bot if found, otherwise undefined
  */
-function getBot(room: room, botToken: string): Bot | undefined {
+function getBot(room: Room, botToken: string): Bot | undefined {
     return room.bots.find(b => b.token == botToken);
 }
 
@@ -41,7 +42,7 @@ export namespace RoomServices {
      * Returns all rooms currently instantiated in the Swarm
      * @returns An array of all instantiated rooms
      */
-    export const getAllRooms = (): Array<room> => {
+    export const getAllRooms = (): Array<Room> => {
         return rooms;
     }
 
@@ -49,7 +50,7 @@ export namespace RoomServices {
      * Returns all rooms currently available from a provider such as JKLM.FUN
      * @returns An array of all available rooms from the provider
      */
-    export const getAllRoomsFromJKLM = async (): Promise<any> => {
+    export const getAllRoomsFromJKLM = async (): Promise<{ [key: string]: any }> => {
         const url = `https://jklm.fun/api/rooms`;
         const response = await fetch(url, {
             method: 'GET',
@@ -68,8 +69,8 @@ export namespace RoomServices {
      * @param id The ID of the Swarm room being retrieved
      * @returns The instance of the room, if found, otherwise undefined
      */
-    export const getRoomByID = (id: string): room | undefined => {
-        return rooms.find((room: room) => room.id == id);
+    export const getRoomByID = (id: string): Room | undefined => {
+        return rooms.find((room: Room) => room.id == id);
     }
 
     /**
@@ -79,7 +80,7 @@ export namespace RoomServices {
      */
     export const deleteRoomByID = (id: string): boolean => {
         const room = getRoomByID(id);
-        rooms = rooms.filter((r: room) => r.id != id);
+        rooms = rooms.filter((r: Room) => r.id != id);
         return room ? true : false;
     }
 
@@ -88,12 +89,14 @@ export namespace RoomServices {
      * @param room The room to create
      * @returns True if the room was created and added to the list of instantiated rooms, otherwise false
      */
-    export const createRoom = async (room: room): Promise<boolean> => {
+    export const createRoom = async (room: Room): Promise<boolean> => {
         const r = getRoomByID(room.id);
         if (!r) {
             const result = await getRoomLink(room.id);
             if (result.url) {
-                room.link = result.url
+                room.link = result.url;
+                room.isActive = false;
+                room.bots = [];
                 rooms.push(room);
                 return true;
             }
@@ -113,10 +116,14 @@ export namespace RoomServices {
         const room = getRoomByID(roomCode);
         if (room) {
             switch (bot.type) {
-                case "spam":
+                case BotType.SPAM:
                     const spamBot = new SpamBot(bot.name, bot.message);
                     room.bots.push(spamBot);
                     return spamBot.token;
+                case BotType.RESPONDER:
+                    const responderBot = new ResponderBot(bot.name);
+                    room.bots.push(responderBot);
+                    return responderBot.token;
                 default:
                     return false;
             }

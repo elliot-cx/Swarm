@@ -6,7 +6,8 @@ export enum BotStatus{
     CONNECTED = "connected",
     BANNED = "banned",
     DISCONNECTED = "disconnected",
-    ACTIVE = "active"
+    ACTIVE = "active",
+    STOPPED = "stop"
 }
 
 export enum BotAction{
@@ -16,10 +17,16 @@ export enum BotAction{
     CONNECT = "connect"
 }
 
+export enum BotType{
+    SPAM = "spam",
+    RESPONDER = "responder",
+    TRACKER = "tracker",
+    VIDEO = "video"
+}
+
 export class Bot{
 
     socket: any;
-    type: string;
     name: string;
     status: BotStatus;
     token: string;
@@ -29,7 +36,6 @@ export class Bot{
 
     constructor(name: string){
         this.socket = require('socket.io-client');
-        this.type = "spam";
         this.token =  Utils.randomString();
         this.auth = null;
         this.name = name;

@@ -36,11 +36,9 @@ export namespace SocketIOService {
      */
     export function emitRoom(roomCode: string, eventName: string, ...args: any[]) {
         const room = RoomServices.getRoomByID(roomCode);
-        if (!room) {
-            console.error(`Room ${roomCode} does not exist.`);
-            return;
+        if (room) {
+            io.to(room.id).emit(eventName, ...args);
         }
-        io.to(room.id).emit(eventName, ...args);
     }
 
 }
