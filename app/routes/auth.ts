@@ -10,7 +10,7 @@ router.get('/', (_: Request, res: Response) => {
 
 // Update auth informations
 router.post('/', (req: Request, res: Response) => {
-    res.json({"sucess": BotAuthentificationService.setAuthentification(req.body)});
+    res.json({ "success": BotAuthentificationService.setAuthentification(req.body) });
 });
 
 export default router;
