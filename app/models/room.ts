@@ -1,6 +1,6 @@
 import { Bot } from './bots/Bot';
 
-export interface room{
+export interface Room{
     id: string,
     name: string,
     type: string,
