@@ -1,14 +1,16 @@
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "../Header/Header";
-import HomePage from "../Pages/HomePage";
-import RoomPage from "../Pages/RoomPage";
+import HomePage from "../../Pages/HomePage/HomePage";
+import RoomsPage from "../../Pages/RoomsPage/RoomsPage";
 
 export default function Router(){
     return(
         <BrowserRouter>
             <Header></Header>
-            <Route path='./' element={<HomePage></HomePage>}></Route>
-            <Route path='./rooms' element = {<RoomPage></RoomPage>}></Route>
+            <Routes>
+                <Route path='/' element={<HomePage></HomePage>}></Route>
+                <Route path='/rooms' element = {<RoomsPage></RoomsPage>}></Route>
+            </Routes>
         </BrowserRouter>
     );
 }
