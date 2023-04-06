@@ -1,6 +1,6 @@
-import { Bot, BotAction, BotStatus, BotType } from "../models/bots/Bot";
+import { Bot, BotAction, BotType } from "../models/bots/Bot";
 import ResponderBot from "../models/bots/ResponderBot";
-import SpamBot from "../models/bots/spamBot";
+import SpamBot from "../models/bots/SpamBot";
 import { Room } from "../models/room";
 import fetch from "node-fetch";
 
@@ -114,7 +114,7 @@ export namespace RoomServices {
      */
     export const addBot = (roomCode: string, bot: any): string | false => {
         const room = getRoomByID(roomCode);
-        if (room) {
+        if (room && room.bots.length < 16) {
             switch (bot.type) {
                 case BotType.SPAM:
                     const spamBot = new SpamBot(bot.name, bot.message);
@@ -130,6 +130,32 @@ export namespace RoomServices {
         }
         return false;
     }
+
+    /**
+     * Adds a number of bots to a room
+     * @param roomCode The code for the room where the bot will be added
+     * @param bot The bot to be added
+     * @param number The number of bot to be added
+     * @returns The token for the added bot, if successful, otherwise false
+     */
+    // export const addBots = (roomCode: string, bot: any, number: number): [string] | false => {
+    //     const room = getRoomByID(roomCode);
+    //     if (room && room.bots.length < 16 - number) {
+    //         switch (bot.type) {
+    //             case BotType.SPAM:
+    //                 const spamBot = new SpamBot(bot.name, bot.message);
+    //                 room.bots.push(spamBot);
+    //                 return spamBot.token;
+    //             case BotType.RESPONDER:
+    //                 const responderBot = new ResponderBot(bot.name);
+    //                 room.bots.push(responderBot);
+    //                 return responderBot.token;
+    //             default:
+    //                 return false;
+    //         }
+    //     }
+    //     return false;
+    // }
 
     /**
      * Manages a bot's status to a room
@@ -174,6 +200,30 @@ export namespace RoomServices {
      * @returns True if the bot was successfully updated, otherwise false 
      */
     export const updateBot = (roomCode: string, botToken: string, props: any): boolean => {
+        const room = getRoomByID(roomCode);
+        if (!room) {
+            return false;
+        }
+        const bot = getBot(room,botToken);
+        if (!bot) {
+            return false;
+        }
+
+        Object.keys(props).forEach((key)=>{
+            if (bot.hasOwnProperty(key)) {
+                // bot[key] = props[key];
+            }
+        });
+        
+        return true;
+    }
+
+    export const manageRoomBots = (roomCode: string, action: BotAction) => {
+        const room = getRoomByID(roomCode);
+        if (!room) {
+            return false;
+        }
+        room.bots.map((bot: Bot) => manageBot(roomCode,bot.token,action));
         return true;
     }
 }

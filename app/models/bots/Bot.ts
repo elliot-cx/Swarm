@@ -110,5 +110,5 @@ export class Bot{
 
     start() {this.setStatus(BotStatus.ACTIVE);}
 
-    stop() {this.setStatus(BotStatus.CONNECTED);}
+    stop() {this.setStatus(BotStatus.STOPPED);}
 }
