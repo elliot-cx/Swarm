@@ -4,7 +4,7 @@
   "description": "A powerfull JKLM bot tool",
   "main": "index.ts",
   "scripts": {
-    "start": "nodemon index.ts"
+    "start": "nodemon index.ts --ignore private/"
   },
   "author": "Derfire",
   "license": "ISC",

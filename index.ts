@@ -4,7 +4,7 @@ import { createServer } from "http";
 import { SocketIOService } from "./app/services/sockets";
 import router from "./app/app";
 
-export const PORT = 8080;
+export const PORT = 6969;
 const app = express();
 
 const server = createServer(app);
