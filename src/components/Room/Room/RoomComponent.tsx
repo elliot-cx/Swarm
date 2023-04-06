@@ -1,5 +1,5 @@
 import { useState } from "react"
-import Room from '../../../models/Room';
+import {Room} from '../../../models/Room';
 import styles from './RoomComponent.module.css'
 import { Link } from "react-router-dom";
 const MAX_BOT = 16;
