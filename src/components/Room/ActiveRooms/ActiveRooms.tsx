@@ -4,10 +4,14 @@ import styles from "./ActiveRooms.module.css"
 import RoomComponent from "../Room/RoomComponent";
 export default function ActiveRooms(){
     const fecthAllRooms = () => {
-        fetch('http://localhost:8080/room',{
-            mode:'cors'
+        fetch('http://localhost:6969/room', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
         })
-        .then(console.log);
+            .then((response) => response.json())
+            .then((data) => {})
+            .catch((error) => console.error(error));
     }
     fecthAllRooms()
     const [rooms, setRooms] = useState<Room[]>([]);
