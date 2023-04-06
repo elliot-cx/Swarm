@@ -1,4 +1,4 @@
-export default interface SpamBot{
+export type SpamBot = {
     name:string,
     message:string
 }
