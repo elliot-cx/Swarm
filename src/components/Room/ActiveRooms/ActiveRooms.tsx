@@ -1,14 +1,13 @@
 import { useState } from "react";
-import Room from "../../../models/Room";
+import {Room} from "../../../models/Room";
 import styles from "./ActiveRooms.module.css"
 import RoomComponent from "../Room/RoomComponent";
 export default function ActiveRooms(){
     const fecthAllRooms = () => {
         fetch('http://localhost:8080/room',{
-            mode:'no-cors'
+            mode:'cors'
         })
-        .then((res)=> res.body ? res.json() : null)
-        .then((data)=> data ? console.log(data) : console.log('no data'));
+        .then(console.log);
     }
     fecthAllRooms()
     const [rooms, setRooms] = useState<Room[]>([]);
