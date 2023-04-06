@@ -12,7 +12,6 @@ export default function RoomComponent ({room}:Props){
         <div id={styles.roomRoot}>
             <div className={styles.columnContainer}>
                 <h1>{displayedRoom.name}</h1>
-                <h2>{displayedRoom.link}</h2>
                 <p>{displayedRoom.type}</p>
                 <p>{`${displayedRoom.bots.length} / ${MAX_BOT}` }</p>
             </div>
