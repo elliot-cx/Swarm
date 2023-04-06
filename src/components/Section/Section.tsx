@@ -44,7 +44,6 @@ export default function Section({
     if (!classNames) return '';
     return classNames.map((className) => styles[className] ?? '').join(' ');
   };
-  console.log(typeof title1);
   
   
   return (
