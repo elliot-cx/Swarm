@@ -1,22 +1,44 @@
 import { MouseEventHandler } from "react";
 import styles from "./NewRoom.module.css";
 import {Room} from "../../../models/Room";
-import { fetchData } from "../../../utils/HttpUtils";
+import { HttpUtils } from "../../../utils/HttpUtils";
 export default function NewRoom(){
+    type RoomData = {
+        [key:string]:any
+    }    
+
     const postRoomData = (submit:any) => {
         submit.preventDefault();
         let roomCode:string = submit.target[0].value as string;
-        let rooms:Room[]|undefined;
-        fetch('localhost:8080/room?provider=JKLM')
+        console.log(roomCode);
+        fetch('http://localhost:6969/room?provider=JKLM',)
         .then((res)=>res.json())
-        .then((data)=>rooms = data as Room[])
-        const room = rooms ? rooms.filter((obj)=>obj.id===roomCode) : undefined;
-        if(room){
-            fetchData<Room[]|{success:boolean}>('/room')
-            .then(console.log)
-        }else{
-            console.log('Error when fetching JKLM rooms.')
-        }
+        .then((rooms)=> {
+            rooms = rooms.publicRooms as RoomData[] | undefined
+            const room = rooms ? rooms.find((room:RoomData) => room.roomCode===roomCode) : undefined;
+            if(room){
+                const postData = {
+                    id:room.roomCode,
+                    name:room.name,
+                    type:room.gameId,
+                    nbPlayers:Number(room.playerCount)
+                }; 
+                fetch('http://localhost:6969/room', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postData)
+                }).then((res)=>res.json())
+                .then((data)=>{
+                    if(data.sucess)alert("Uwuuwuwu sesxez")
+                });
+            }else{
+                console.log('Room not found.')
+            }
+        });
+
+        
     }
 
     return(
