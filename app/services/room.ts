@@ -193,6 +193,21 @@ export namespace RoomServices {
     };
 
     /**
+     * Manages a all bot's status of a specified room
+     * @param roomCode The code for the room to manage
+     * @param action The action to perform on the bots (connect, disconnect, start, stop)
+     * @returns True if the bots were successfully managed, otherwise false
+     */
+    export const manageRoomBots = (roomCode: string, action: BotAction) => {
+        const room = getRoomByID(roomCode);
+        if (!room) {
+            return false;
+        }
+        room.bots.map((bot: Bot) => manageBot(roomCode, bot.token, action));
+        return true;
+    }
+
+    /**
      * Updates the properties of a bot
      * @param roomCode The code for the room where the bot is located
      * @param botToken The token assigned to the bot being updated
@@ -204,26 +219,18 @@ export namespace RoomServices {
         if (!room) {
             return false;
         }
-        const bot = getBot(room,botToken);
+        const bot = getBot(room, botToken);
         if (!bot) {
             return false;
         }
-
-        Object.keys(props).forEach((key)=>{
-            if (bot.hasOwnProperty(key)) {
-                // bot[key] = props[key];
+        // Loop properties and change if available
+        for (const key in props) {
+            if (Object.prototype.hasOwnProperty.call(props, key)) {
+                if (!["socket", "token", "auth", "status"].includes(key)) {
+                    bot[key] = props[key];
+                }
             }
-        });
-        
-        return true;
-    }
-
-    export const manageRoomBots = (roomCode: string, action: BotAction) => {
-        const room = getRoomByID(roomCode);
-        if (!room) {
-            return false;
         }
-        room.bots.map((bot: Bot) => manageBot(roomCode,bot.token,action));
         return true;
     }
 }

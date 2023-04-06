@@ -3,14 +3,8 @@
  *
  * @packageDocumentation
  */
-import { PORT } from "../..";
 import { Authentification } from "../models/authentification";
 import { DataService } from "./data";
-
-// Front side
-const discordClientId = BigInt(688126093424721954);
-const uri = `localhost:${PORT}/auth`;
-const url = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${encodeURIComponent(uri)}&response_type=token&scope=identify`
 
 export namespace BotAuthentificationService{
 

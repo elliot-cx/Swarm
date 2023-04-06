@@ -1,10 +1,5 @@
 import { Bot, BotType } from "./Bot";
 
-// Define bot properties
-type ResponderBotProps = {
-
-}
-
 export default class ResponderBot extends Bot {
 
     type: BotType;

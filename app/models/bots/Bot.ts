@@ -31,6 +31,8 @@ export class Bot{
     status: BotStatus;
     token: string;
     auth: Authentification | null;
+    // Enable access properties from key like -> Object[propertyName]
+    [key: string]: any;
 
     private roomCode: string | undefined;
 
