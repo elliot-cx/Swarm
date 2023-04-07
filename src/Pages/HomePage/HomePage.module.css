@@ -13,3 +13,13 @@ b{
     padding:0.2em;
     border-radius: 0.2em;
 }
+#childrenNodesContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.homeSection{
+    flex-direction: column;
+}
