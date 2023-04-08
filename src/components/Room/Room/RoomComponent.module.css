@@ -1,5 +1,13 @@
 #roomRoot{
     display: grid;
     grid-template-columns: 2fr 1fr;
-    place-items: start;
+    place-items: center;
+    width: 100%;
+}
+.columnContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
