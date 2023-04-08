@@ -2,7 +2,7 @@ import { MouseEventHandler } from "react";
 import styles from "./NewRoom.module.css";
 import {Room} from "../../../models/Room";
 import { HttpUtils } from "../../../utils/HttpUtils";
-export default function NewRoom(){
+export default function NewRoom({activeRoomsRef}:any){
     type RoomData = {
         [key:string]:any
     }    
@@ -31,8 +31,9 @@ export default function NewRoom(){
                     body: JSON.stringify(postData)
                 }).then((res)=>res.json())
                 .then((data)=>{
-                    if(data.sucess)alert("Uwuuwuwu sesxez")
-                });
+                    if(data && activeRoomsRef.current) activeRoomsRef.current.updateRooms();
+                })
+                .catch(console.log);
             }else{
                 console.log('Room not found.')
             }
