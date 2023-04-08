@@ -51,7 +51,7 @@ export default function Section({
         { title1 
         ? <> 
           <h1 className={styles.sectionTitle}>{title1}</h1>
-          <div className={styles.verticalSeparator}></div> 
+          <div className={styles.horizontalSeparator}></div> 
         </> 
         : null }
         
