@@ -18,15 +18,15 @@ type Link={
 type Props = {
 // Typed used for the props of this component, it includes an html id, <h1> title, <h2> title, <p> text,
 // an array of links <a> and functions to run  
-classNames?:string[]
-id?:string
-linksDivClasses?:string[],
-title1?:string | ReactNode
-title2?:string | ReactNode
-text?:string | ReactNode
-links?:Array<Link>,
-contentChildrenNodes?:Array<ReactNode>,
-childrenNodes?:Array<ReactNode>,
+  classNames?:string[]
+  id?:string
+  linksDivClasses?:string[],
+  title1?:string | ReactNode
+  title2?:string | ReactNode
+  text?:string | ReactNode
+  links?:Array<Link>,
+  contentChildrenNodes?:Array<ReactNode>,
+  childrenNodes?:Array<ReactNode>,
 }
 export default function Section({
   classNames,
@@ -74,7 +74,7 @@ export default function Section({
               : null}
               { contentChildrenNodes 
                 ? contentChildrenNodes.map((contentChildrenNode: ReactNode, contentChildrenKey: number) => {
-                    return <div key={contentChildrenKey}>{contentChildrenNode}</div>;
+                    return contentChildrenNode;
                 })
                 : null}
           </div>
