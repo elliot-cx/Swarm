@@ -3,8 +3,8 @@
     grid-template-columns: 2fr 1fr;
     place-items: center;
     width: 100%;
-    background-color: #4c4c4c;
-    margin:1em;
+    background-color: #4c4c4cad;
+    margin:1em; 
     border: solid 1px rgba(255,255,255,0.2);
     border-radius: 1em;
     width: 40%;
@@ -32,4 +32,44 @@
 }   
 .columnContainer > div > p {
     margin: 0.1em;
+}
+
+.columnContainer > *{
+    width: 100%;
+}
+.columnContainer > a {
+    display: flex;
+    justify-content: center;
+    transform: translate(20%,50%);
+}
+.columnContainer > a > svg{
+    padding: 0.5em;
+    color: white;
+    border-radius: 50%;
+    border: solid 1px rgba(255,255,255,0.2);
+    aspect-ratio: 1/1;
+    width: 1em;
+}
+.columnContainer> div:not(.roomInfo){
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1em;
+}
+
+.activityIconContainer{
+    width: 100%;
+}
+.activityIcon{
+    width: 0.2em;
+    border-radius: 50%;
+    background-color: grey;
+    border: solid 1px rgba(0,0,0,0.2);
+    padding: 1em;
+    aspect-ratio: 1/1;
+    transform: translate(150%,150%);
+}
+.activeIcon{
+    background-color: rgb(41, 165, 41);
 }
