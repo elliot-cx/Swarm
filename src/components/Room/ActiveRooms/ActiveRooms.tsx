@@ -28,11 +28,12 @@ const ActiveRooms = forwardRef((props, ref)=>{
 
     return(
         <>
-            {rooms.length == 0 
+            {rooms.length == 0 && false 
             ? <p>Aucune room n'est gérée par l'application, vous pouvez en ajouter de nouvelles avec le formulaire ci dessous</p>
             : rooms.map((room,key)=>{
                 return(<div key={key}><RoomComponent room={room}></RoomComponent></div>)
             })}
+            <RoomComponent room={{id:'TEST',name:'TEST_ROOM',type:'TEST_TYPE',nbPlayers:69,isActive:true,bots:[]}}></RoomComponent>
         </>
     )
 });

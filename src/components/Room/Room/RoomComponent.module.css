@@ -3,6 +3,12 @@
     grid-template-columns: 2fr 1fr;
     place-items: center;
     width: 100%;
+    background-color: #4c4c4c;
+    margin:1em;
+    border: solid 1px rgba(255,255,255,0.2);
+    border-radius: 1em;
+    width: 40%;
+    padding: 1em;
 }
 .columnContainer{
     display: flex;
@@ -10,4 +16,20 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+}
+.columnContainer > *{
+    width: 100%;
+    text-align: left;
+}
+.columnContainer > h1{
+    margin-bottom: 0.2em;
+    font-size: 2.5em;
+}
+.columnContainer > h2{
+    font-size: 1.5em;
+    margin-top: 0.2em;
+    color: rgba(255,255,255,0.5);
+}   
+.columnContainer > div > p {
+    margin: 0.1em;
 }

@@ -11,12 +11,16 @@ export default function RoomComponent ({room}:Props){
     return(
         <div id={styles.roomRoot}>
             <div className={styles.columnContainer}>
-                <h1>{displayedRoom.name}</h1>
-                <p>{displayedRoom.type}</p>
-                <p>{`${displayedRoom.bots.length} / ${MAX_BOT}` }</p>
+                <h1>{displayedRoom.id}</h1>
+                <h2>{displayedRoom.name}</h2>
+                <div>
+                    <p>{`Game: ${displayedRoom.type}`} </p>
+                    <p>{`Players: ${displayedRoom.nbPlayers}`} </p>
+                    <p>{`Bots: ${displayedRoom.bots.length} / ${MAX_BOT}`}</p>
+                </div>
             </div>
             <div className={styles.columnContainer}>
-                <Link to='./rooms' className={styles.selectRoom}>Select</Link>
+                <Link to='./rooms' className={styles.selectRoom}><FontAwesomeIcon></FontAwesomeIcon></Link>
                 <div className={displayedRoom.isActive ? styles.ativeIcon : styles.inactiveIcon}></div>
             </div>
         </div>
