@@ -39,6 +39,7 @@
 .horizontalSeparator{
     border-bottom: 1px solid rgba(255,255,255,0.1);
     border-color: rgba(255,255,255,0.2);
+    margin-bottom: 1em;
     width: 80%;
 }
 .content{
