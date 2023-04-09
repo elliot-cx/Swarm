@@ -7,11 +7,12 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 const MAX_BOT = 16;
 type Props={
     room:Room
+    key?:number
 }
-export default function RoomComponent ({room}:Props){
+export default function RoomComponent ({room,key}:Props){
     const [displayedRoom,setDisplayedRoom] = useState<Room>(room)
     return(
-        <div id={styles.roomRoot}>
+        <div key = {key ? key : null } id={styles.roomRoot}>
             <div className={styles.columnContainer}>
                 <h1>{displayedRoom.id}</h1>
                 <h2>{displayedRoom.name}</h2>
