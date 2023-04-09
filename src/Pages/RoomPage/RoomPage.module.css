@@ -4,3 +4,14 @@
     align-items: center;
     justify-content: center;
 }
+.botsPanel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.connectedBot{}
+.bannedBot{}
+.disconnectedBot{}
+.activeBot{}
+.stoppedBot{}
