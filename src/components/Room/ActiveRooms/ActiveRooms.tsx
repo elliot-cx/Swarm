@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, forwardRef, useEffect, useState } from "react";
 import {Room} from "../../../models/Room";
 import styles from "./ActiveRooms.module.css"
 import RoomComponent from "../Room/RoomComponent";
@@ -7,9 +7,14 @@ type ActiveRoomsState={
     rooms:Room[];
 }
 
-export default class ActiveRooms extends Component<{}, ActiveRoomsState> {
+type Props = {
+    ref:any
+}
+
+const ActiveRooms = forwardRef((props:any,ref) => {
+    const [rooms,setRooms] = useState<Room[]>([])
     
-    fetchAllRooms(){
+    const fetchAllRooms = () =>{
         console.log('fetching rooms ...');
         
         fetch('http://localhost:6969/room', {
@@ -19,33 +24,25 @@ export default class ActiveRooms extends Component<{}, ActiveRoomsState> {
         })
         .then((response) => response.json())
         .then((data) => {
-            this.changeRooms(data);
+            setRooms(data);
         })
         .catch((error) => console.error(error));
     }
 
-    changeRooms(rooms:Room[]){
-        this.setState({rooms:rooms})
-    }
+    useEffect(()=>{
+        fetchAllRooms();
+    },[]);
 
-    constructor(props:any){
-        super(props);
-        this.state = {
-            rooms:[]
-        };
-        this.fetchAllRooms();
-    }
-
-    render = () => { 
-        return(
-            <div className={styles.activeRoomsRoot}>
-                {this.state.rooms.length == 0 && false 
-                ? <p>Aucune room n'est gérée par l'application, vous pouvez en ajouter de nouvelles avec le formulaire ci dessous</p>
-                : this.state.rooms.map((room:Room,key:number)=>{
-                    return(<RoomComponent key={key} room={room}></RoomComponent>)
-                })}
-                {/* <RoomComponent room={{id:'TEST',name:'TEST_ROOM',type:'TEST_TYPE',nbPlayers:69,isActive:true,bots:[]}}></RoomComponent> */}
-            </div>
-        )
-    }
-}
+    return(
+        
+        <div className={styles.activeRoomsRoot}>
+            {rooms.length == 0 
+            ? <p>Aucune room n'est gérée par l'application, vous pouvez en ajouter de nouvelles avec le formulaire ci dessous</p>
+            : rooms.map((room:Room,index:number)=>{
+                return(<RoomComponent key={index} room={room}></RoomComponent>)
+            })}
+            {/* <RoomComponent room={{id:'TEST',name:'TEST_ROOM',type:'TEST_TYPE',nbPlayers:69,isActive:true,bots:[]}}></RoomComponent> */}
+        </div>
+    )
+});
+export default ActiveRooms;
