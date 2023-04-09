@@ -34,7 +34,7 @@ export default function HomePage(){
             contentChildrenNodes={[
                 tutorial()
             ]}></Section>
-        <Section title1="Rooms actives" contentChildrenNodes={[<NewRoom activeRoomRef={activeRoomsRef}></NewRoom>,<ActiveRooms ref={activeRoomsRef}></ActiveRooms>]}></Section>
+        <Section title1="Rooms actives" contentChildrenNodes={[<NewRoom activeRoomRef={activeRoomsRef}></NewRoom>,<ActiveRooms></ActiveRooms>]}></Section>
     </main>
     );
 }
