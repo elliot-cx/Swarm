@@ -5,6 +5,12 @@
     align-items: flex-start;
     justify-content: center;
 }
+.tutorial{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 b{
     color:#9e4646;
 }

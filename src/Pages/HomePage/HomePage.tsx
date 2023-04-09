@@ -6,10 +6,10 @@ import Section from '../../components/Section/Section';
 import styles from './HomePage.module.css'
 
 export default function HomePage(){
-    type activeRoomRefType = {
-        updateRooms():void;
+    type ActiveRoomRefType = {
+        fetchAllRooms():void;
     }
-    const activeRoomsRef = useRef<activeRoomRefType> (null);
+    const activeRoomsRef = useRef<ActiveRoomRefType> (null);
     const tutorial = () => {
         return(
             <div className={styles.tutorial}>
@@ -34,7 +34,7 @@ export default function HomePage(){
             contentChildrenNodes={[
                 tutorial()
             ]}></Section>
-        <Section title1="Rooms actives" contentChildrenNodes={[<NewRoom activeRoomRef={activeRoomsRef}></NewRoom>,<ActiveRooms></ActiveRooms>]}></Section>
+        <Section title1="Rooms actives" contentChildrenNodes={[<NewRoom activeRoomRef={activeRoomsRef}></NewRoom>,<ActiveRooms ref={activeRoomsRef}></ActiveRooms>]}></Section>
     </main>
     );
 }
