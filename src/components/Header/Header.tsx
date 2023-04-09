@@ -13,7 +13,7 @@ export default function Header(){
     return(
         <header id={styles.headerRoot}>    
             <Link className={styles.logo} to='./'><img alt="Swarm Bot"onClick={logoClick} src ='./assets/images/Logo.png'></img></Link>
-            <Link className={styles.navButton} to='./rooms'>Rooms</Link>
+            <Link className={styles.navButton} to='./'>Home</Link>
         </header>
     );
 }
