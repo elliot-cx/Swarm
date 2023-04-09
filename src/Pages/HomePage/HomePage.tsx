@@ -18,9 +18,9 @@ export default function HomePage(){
                 <p>Attention, cette application de crée pas de parties sur JKLM. Par rooms, nous entendons <b>les parties gérées par Swarm</b>.</p>
                 <h3>Ajouter des bots</h3>
                 <p>Après avoir créé une room, vous pourrez la <b>selectionner et l'administrer</b>.</p>
-                <p>Ajoutez jusqu'à 16 bots (par room, peut être)du type de votre choix et <b>envoyez la sauce</b> !</p>
+                <p>Ajoutez jusqu'à 16 bots (par room) du type de votre choix et <b>envoyez la sauce</b> !</p>
                 <h4>Etat des bots et contrôle de leurs actions</h4>
-                <p>Swarm affiche en temps réel <b>l'état de chaque bot</b> (connecte, banni, déconnecté etc..)</p>
+                <p>Swarm affiche en temps réel <b>l'état de chaque bot</b> (connecté, banni, déconnecté etc..)</p>
             </div>
         )
     }
@@ -34,7 +34,7 @@ export default function HomePage(){
             contentChildrenNodes={[
                 tutorial()
             ]}></Section>
-        <Section title1="Rooms actives" contentChildrenNodes={[<ActiveRooms ref={activeRoomsRef}></ActiveRooms>,<NewRoom activeRoomRef={activeRoomsRef}></NewRoom>]}></Section>
+        <Section title1="Rooms actives" contentChildrenNodes={[<NewRoom activeRoomRef={activeRoomsRef}></NewRoom>,<ActiveRooms ref={activeRoomsRef}></ActiveRooms>]}></Section>
     </main>
     );
 }
