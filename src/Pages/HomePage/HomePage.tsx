@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 import ActiveRooms from '../../components/Room/ActiveRooms/ActiveRooms';
 import NewRoom from '../../components/Room/NewRoom/NewRoom';
-import Room from '../../components/Room/Room/RoomComponent';
 import Section from '../../components/Section/Section';
 import styles from './HomePage.module.css'
 
@@ -31,10 +30,8 @@ export default function HomePage(){
             title2= {<h2>Votre outil de <b>spam, troll et cheat</b> sur JKLM</h2>} 
             classNames={[styles.homeSection]}
             text="Cette application vous permet de contrôler jusqu'à 16 bots de différents types : spam, cheat et bientôt tracker."
-            contentChildrenNodes={[
-                tutorial()
-            ]}></Section>
-        <Section title1="Rooms actives" contentChildrenNodes={[<NewRoom activeRoomRef={activeRoomsRef}></NewRoom>,<ActiveRooms ref={activeRoomsRef}></ActiveRooms>]}></Section>
+            contentChildrenNodes={tutorial()}></Section>
+        <Section title1="Rooms actives" contentChildrenNodes={<><NewRoom activeRoomRef={activeRoomsRef}></NewRoom><ActiveRooms ref={activeRoomsRef}></ActiveRooms></>}></Section>
     </main>
     );
 }
