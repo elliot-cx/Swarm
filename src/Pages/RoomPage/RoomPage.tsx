@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HttpUtils } from '../../utils/HttpUtils';
 import styles from './RoomPage.module.css';
 import { Room } from '../../models/Room';
@@ -8,18 +8,24 @@ import { Bot } from '../../models/Bot/Bot';
 
 export default function RoomsPage(){
     const roomId = new URLSearchParams(window.location.search).get("id");
-    console.log(roomId);
-    const [room,setRoom] = useState<Room|undefined>(undefined)
-    HttpUtils.fetchData('room')
-    .then((rooms)=>{
+    const [room,setRoom] = useState<Room|undefined>(undefined);
+    useEffect(()=>{
+        HttpUtils.fetchData('room')
+        .then((rooms)=>{
         const room = (rooms as Room[]).filter(room=>room.id==roomId)[0];
-        setRoom(room)
-    })
-    const botsPanel = () => (
+            setRoom(room);
+        })
+    },[])
+    const RoomPanel = () => (
+        <div className={styles.roomPanel}>
+            <form></form>
+        </div>
+    )
+    const BotsPanel = () => (
         <div className={styles.botsPanel}>
-            <div className='botList'>
+            <div className={styles.botList}>
                 {room?.bots.map((bot:Bot,key:number)=>{
-                    return <div>
+                    return <div key={key}>
                         <h1>{bot.name}</h1>
                         <p>{`Type: ${bot.type}`}</p>
                         <div className={`${bot.status}Bot`}></div>
@@ -27,11 +33,31 @@ export default function RoomsPage(){
                 })}
             </div>
         </div>
-
     )
+
+    const handleBotsFormSubmit = ( event:React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.target as HTMLFormElement);
+        const nbBots = formData.get('nbBots');
+        if(nbBots){
+            // for(let i = 0; i < nbBots; i++){
+            //     HttpUtils.postData('bot',{roomId:room?.id})
+            // }
+        }
+    }   
+    
     return (
+        // TODO : un form pour chosisir le type puis un deuxieme pour renseigner les parametres (uwu)
         <div className={styles.roomRoot}>
-            <Section title1={room?.name} title2={`Gérer la salle ${room?.id}`} contentChildrenNodes={[botsPanel()]}></Section>
+            <Section title1={room?.name} title2={`Gérer la salle ${room?.id}`} contentChildrenNodes={ 
+            <>
+                <form onSubmit={handleBotsFormSubmit} className={styles.botsForm}>
+                    <label>Ajouter des bots</label>
+                    <input type="text" name='nbBots' placeholder="Nombre de bots"></input>
+                    <input className={styles.submit} type='submit' value='lesgo'></input>
+                </form>
+            </> 
+            }></Section>    
         </div>
     )
 }
