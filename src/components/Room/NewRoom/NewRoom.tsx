@@ -9,7 +9,7 @@ const NewRoom = ({ref}:any) => {
 
     const postRoomData = (submit:any) => {
         submit.preventDefault();
-        let roomCode:string = submit.target[0].value as string;
+        const roomCode:string = submit.target[0].value as string;
         console.log(roomCode);
 
         HttpUtils.fetchData('room?provider=JKLM')

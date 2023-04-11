@@ -6,7 +6,7 @@ export default function Header(){
         window.location.href='./'
     }
     const navButtonClick = (e:Event) =>{
-        let target = e.target as any;
+        const target = e.target as any;
         if(target) target.classList.add('clicked');
     }
 

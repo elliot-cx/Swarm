@@ -12,7 +12,7 @@ export default function RoomsPage(){
     const [room,setRoom] = useState<Room|undefined>(undefined)
     HttpUtils.fetchData('room')
     .then((rooms)=>{
-        let room = (rooms as Room[]).filter(room=>room.id==roomId)[0];
+        const room = (rooms as Room[]).filter(room=>room.id==roomId)[0];
         setRoom(room)
     })
     const botsPanel = () => (
