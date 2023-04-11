@@ -1,12 +1,17 @@
+import { Server } from 'http';
+import { Socket } from 'socket.io';
+import { RoomServices } from './room';
+import chalk from 'chalk';
+
+function log(string:string) {
+    console.log(chalk.magenta("[socket]"),string);
+}
+
 /**
  * This module contains functions related to sockets for a swarm bot.
  *
  * @packageDocumentation
  */
-import { Server } from 'http';
-import { Socket } from 'socket.io';
-import { RoomServices } from './room';
-
 export namespace SocketIOService {
 
     var io = require('socket.io');
@@ -16,6 +21,7 @@ export namespace SocketIOService {
      * @param server The HTTP server to use for socket.io.
      */
     export function initSockets(server: Server) {
+        log("Init socket server");
         io = io(server);
         io.on('connection', (socket: Socket) => {
             socket.on('join', (roomCode: string, callback: Function) => {
@@ -26,6 +32,7 @@ export namespace SocketIOService {
             });
             socket.on('disconnect', () => { });
         });
+        log("Sockets Service Ready !");
     }
 
     /**

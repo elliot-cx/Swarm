@@ -1,8 +1,10 @@
+import { BotAuthentificationService } from "../../services/botAuthentification";
+import { reCaptcha } from "../../services/reCaptcha";
 import { SocketIOService } from "../../services/sockets";
 import { Utils } from "../../utils/utils";
 import { Authentification } from "../authentification"
 
-export enum BotStatus{
+export enum BotStatus {
     CONNECTED = "connected",
     BANNED = "banned",
     DISCONNECTED = "disconnected",
@@ -10,21 +12,21 @@ export enum BotStatus{
     STOPPED = "stop"
 }
 
-export enum BotAction{
+export enum BotAction {
     START = "start",
     STOP = "stop",
     DISCONNECT = "disconnect",
     CONNECT = "connect"
 }
 
-export enum BotType{
+export enum BotType {
     SPAM = "spam",
     RESPONDER = "responder",
     TRACKER = "tracker",
     VIDEO = "video"
 }
 
-export class Bot{
+export class Bot {
 
     socket: any;
     name: string;
@@ -36,9 +38,9 @@ export class Bot{
 
     private roomCode: string | undefined;
 
-    constructor(name: string){
+    constructor(name: string) {
         this.socket = require('socket.io-client');
-        this.token =  Utils.randomString();
+        this.token = Utils.randomString();
         this.auth = null;
         this.name = name;
         this.status = BotStatus.DISCONNECTED;
@@ -46,49 +48,50 @@ export class Bot{
 
     // Change la façon dont l'objet est parsé en JSON
     // Ici on veut exclure des propriétés qui ne doivent pas être renvoyées par l'API
-    toJSON(){}
+    toJSON() { }
 
-    onStatusChanged(status: BotStatus, data?: any){}
+    onStatusChanged(status: BotStatus, data?: any) { }
 
-    setStatus(status: BotStatus,data?: any) {
+    setStatus(status: BotStatus, data?: any) {
         this.status = status;
-        this.onStatusChanged(status,data);
+        this.onStatusChanged(status, data);
         if (this.roomCode) {
-            SocketIOService.emitRoom(this.roomCode,"status",this);
+            SocketIOService.emitRoom(this.roomCode, "status", this);
         }
     }
 
-    emit(event: string, data: any){
+    emit(event: string, data: any) {
         if (this.socket && this.socket.connected && this.roomCode) {
-            this.socket.emit(event,data);
+            this.socket.emit(event, data);
         }
     }
 
-    connect(roomCode: string,url: string){
+    connect(roomCode: string, url: string) {
         this.socket = this.socket.connect(url);
         this.roomCode = roomCode;
 
-        const joinData = {
-            "roomCode": roomCode,
-            "userToken": this.token,
-            "nickname": this.name,
-            "auth": null,
-            "language": "en-EN"
-        };
-
-        this.socket.on("connect",()=>{
-            this.socket.emit("joinRoom", joinData, (data:any) => {
-                this.setStatus(BotStatus.CONNECTED,data);
+        this.socket.on("connect", async () => {
+            const gcToken = await reCaptcha.resolveCaptcha();
+            const joinData = {
+                "roomCode": roomCode,
+                "userToken": this.token,
+                "nickname": this.name,
+                "auth": null,
+                "language": "en-EN",
+                "token": gcToken
+            };
+            this.socket.emit("joinRoom", joinData, (data: any) => {
+                this.setStatus(BotStatus.CONNECTED, data);
             });
         });
 
-        this.socket.on("disconnect",()=>{
+        this.socket.on("disconnect", () => {
             this.setStatus(BotStatus.DISCONNECTED);
             this.socket.removeAllListeners();
         });
 
         // Bot get ban (mostly)
-        this.socket.on("kicked",(reason: any)=>{
+        this.socket.on("kicked", (reason: any) => {
             if (this.status == BotStatus.ACTIVE) {
                 this.stop();
             }
@@ -100,17 +103,17 @@ export class Bot{
         //     console.log(message);
         // });
 
-        this.socket.on("connect_error",(err:any)=>{
+        this.socket.on("connect_error", (err: any) => {
             console.log(err);
             this.setStatus(BotStatus.DISCONNECTED);
             // Auto reconnect
-            this.connect(roomCode,url);
+            this.connect(roomCode, url);
         });
     }
 
-    disconnect() {this.socket.close();}
+    disconnect() { this.socket.close(); }
 
-    start() {this.setStatus(BotStatus.ACTIVE);}
+    start() { this.setStatus(BotStatus.ACTIVE); }
 
-    stop() {this.setStatus(BotStatus.STOPPED);}
+    stop() { this.setStatus(BotStatus.STOPPED); }
 }
