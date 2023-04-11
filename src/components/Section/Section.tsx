@@ -25,8 +25,8 @@ type Props = {
   title2?:string | ReactNode
   text?:string | ReactNode
   links?:Array<Link>,
-  contentChildrenNodes?:Array<ReactNode>,
-  childrenNodes?:Array<ReactNode>,
+  contentChildrenNodes?:ReactNode,
+  childrenNodes?:ReactNode,
 }
 export default function Section({
   classNames,
@@ -72,17 +72,13 @@ export default function Section({
                   })}
                 </div>
               : null}
-              { contentChildrenNodes 
-                ? contentChildrenNodes.map((contentChildrenNode: ReactNode, contentChildrenKey: number) => {
-                    return contentChildrenNode;
-                })
+              { contentChildrenNodes
+                ? contentChildrenNodes
                 : null}
           </div>
         : null}
         { childrenNodes 
-          ? childrenNodes.map((childrenNode: ReactNode, childrenKey: number) => {
-            return <div key={childrenKey}>{childrenNode}</div>;
-          })
+          ? childrenNodes
           : null}
     </div>
   );
