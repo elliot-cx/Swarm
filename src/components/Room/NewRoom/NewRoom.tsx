@@ -1,6 +1,4 @@
-import { MouseEventHandler, forwardRef } from "react";
 import styles from "./NewRoom.module.css";
-import {Room} from "../../../models/Room";
 import { HttpUtils } from "../../../utils/HttpUtils";
 const NewRoom = ({ref}:any) => {
     type RoomData = {
