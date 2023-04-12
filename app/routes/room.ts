@@ -41,7 +41,7 @@ router.put("/:id/bot/:botToken", (req: Request, res: Response) => {
     res.json({"success" : RoomServices.updateBot(req.params.id, req.params.botToken, req.body)})
 });
 
-router.post("/:id/bot/:botToken/:action", (req: Request, res: Response) => {
+router.get("/:id/bot/:botToken/:action", (req: Request, res: Response) => {
     const roomId:string = req.params.id;
     const botToken:string = req.params.botToken;
     const action:BotAction = req.params.action as BotAction;
@@ -49,5 +49,11 @@ router.post("/:id/bot/:botToken/:action", (req: Request, res: Response) => {
     res.json({ "success": RoomServices.manageBot(roomId,botToken,action)});
 });
 
+router.get("/:id/:action", (req: Request, res: Response) =>{
+    const roomId:string = req.params.id;
+    const action:BotAction = req.params.action as BotAction;
+
+    res.json({ "success": RoomServices.manageRoomBots(roomId,action)});
+});
 
 export default router;
