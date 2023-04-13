@@ -16,9 +16,9 @@ export default function RoomComponent ({room}:Props){
                 <h1>{displayedRoom.id}</h1>
                 <h2>{displayedRoom.name}</h2>
                 <div className={styles.roomInfo}>
-                    <p>{`Game: ${displayedRoom.type}`} </p>
-                    <p>{`Players: ${displayedRoom.nbPlayers}`} </p>
-                    <p>{`Bots: ${displayedRoom.bots.length} / ${MAX_BOT}`}</p>
+                    <p>Game: {displayedRoom.type} </p>
+                    <p>Players: {displayedRoom.nbPlayers} </p>
+                    <p>Bots: {displayedRoom.bots.length} / {MAX_BOT}</p>
                 </div>
             </div>
             <div className={styles.columnContainer}>
