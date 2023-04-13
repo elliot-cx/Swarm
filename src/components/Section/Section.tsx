@@ -58,7 +58,7 @@ export default function Section({
         { title2 ||  text || links || contentChildrenNodes ? 
           <div className={styles.content}>
               { title2 && typeof title2 == "string" ? <h2 className={styles.sectionTitle2}>{title2}</h2> : title2 }
-              {  text && typeof text == 'string' ? <p className={styles.sectionText}>{text}</p> : text }
+              { text && typeof text == 'string' ? <p className={styles.sectionText}>{text}</p> : text }
               { links 
                 ? <div className={`${styles.linksDiv} ${getClassNameString(linksDivClasses)}`}>
                   {links.map((link: Link, index: number) => {
@@ -71,12 +71,12 @@ export default function Section({
                     )
                   })}
                 </div>
-              : null}
+                : null}
               { contentChildrenNodes
                 ? contentChildrenNodes
                 : null}
           </div>
-        : null}
+          : null}
         { childrenNodes 
           ? childrenNodes
           : null}
