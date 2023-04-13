@@ -12,6 +12,7 @@
     background-color: rgba(25,25,25,0.5);
     color: white;
     backdrop-filter: blur(4px);
+    margin-bottom: 1em;    
 }
 
 .navButton{
