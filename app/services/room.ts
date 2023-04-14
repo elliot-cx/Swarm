@@ -121,7 +121,7 @@ export namespace RoomServices {
                     room.bots.push(spamBot);
                     return spamBot.token;
                 case BotType.RESPONDER:
-                    const responderBot = new ResponderBot(bot.name);
+                    const responderBot = new ResponderBot(bot.name,bot.delay);
                     room.bots.push(responderBot);
                     return responderBot.token;
                 default:

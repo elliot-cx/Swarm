@@ -33,6 +33,7 @@ export class Bot {
     status: BotStatus;
     token: string;
     auth: Authentification | null;
+    peerId: number | undefined;
     // Enable access properties from key like -> Object[propertyName]
     [key: string]: any;
 
@@ -81,6 +82,7 @@ export class Bot {
                 "token": gcToken
             };
             this.socket.emit("joinRoom", joinData, (data: any) => {
+                this.peerId = data.selfPeerId; // To know the bot connexion id from JKLM server
                 this.setStatus(BotStatus.CONNECTED, data);
             });
         });
@@ -98,10 +100,6 @@ export class Bot {
             this.socket.close();
             this.setStatus(BotStatus.BANNED);
         });
-
-        // this.socket.on("chat", (authProfile: any, message: string) => {
-        //     console.log(message);
-        // });
 
         this.socket.on("connect_error", (err: any) => {
             console.log(err);
