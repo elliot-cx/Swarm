@@ -1,6 +1,7 @@
 import { Bot, BotAction, BotType } from "../models/bots/Bot";
 import ResponderBot from "../models/bots/ResponderBot";
 import SpamBot from "../models/bots/SpamBot";
+import TrackerBot from "../models/bots/TrackerBot";
 import { Room } from "../models/room";
 import fetch from "node-fetch";
 
@@ -44,20 +45,6 @@ export namespace RoomServices {
      */
     export const getAllRooms = (): Array<Room> => {
         return rooms;
-    }
-
-    /**
-     * Returns all rooms currently available from a provider such as JKLM.FUN
-     * @returns An array of all available rooms from the provider
-     */
-    export const getAllRoomsFromJKLM = async (): Promise<{ [key: string]: any }> => {
-        const url = `https://jklm.fun/api/rooms`;
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const data = await response.json();
-        return data;
     }
 
     // export const getRoomBy = (field: string, val: any): room[] => {
@@ -124,6 +111,10 @@ export namespace RoomServices {
                     const responderBot = new ResponderBot(bot.name,bot.delay);
                     room.bots.push(responderBot);
                     return responderBot.token;
+                case BotType.TRACKER:
+                    const trackerBot = new TrackerBot(bot.name,bot.nickname,bot.targetAuth);
+                    room.bots.push(trackerBot);
+                    return trackerBot.token;
                 default:
                     return false;
             }
@@ -138,24 +129,17 @@ export namespace RoomServices {
      * @param number The number of bot to be added
      * @returns The token for the added bot, if successful, otherwise false
      */
-    // export const addBots = (roomCode: string, bot: any, number: number): [string] | false => {
-    //     const room = getRoomByID(roomCode);
-    //     if (room && room.bots.length < 16 - number) {
-    //         switch (bot.type) {
-    //             case BotType.SPAM:
-    //                 const spamBot = new SpamBot(bot.name, bot.message);
-    //                 room.bots.push(spamBot);
-    //                 return spamBot.token;
-    //             case BotType.RESPONDER:
-    //                 const responderBot = new ResponderBot(bot.name);
-    //                 room.bots.push(responderBot);
-    //                 return responderBot.token;
-    //             default:
-    //                 return false;
-    //         }
-    //     }
-    //     return false;
-    // }
+    export const addBots = (roomCode: string, bot: any, number: number): boolean => {
+        const room = getRoomByID(roomCode);
+        if (room && room.bots.length <= 16 - number) {
+            for (let index = 0; index < number; index++) {
+                if (!addBot(roomCode,bot)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * Manages a bot's status to a room

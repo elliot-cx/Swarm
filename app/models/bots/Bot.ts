@@ -37,7 +37,7 @@ export class Bot {
     // Enable access properties from key like -> Object[propertyName]
     [key: string]: any;
 
-    private roomCode: string | undefined;
+    protected roomCode: string = "";
 
     constructor(name: string) {
         this.socket = require('socket.io-client');
@@ -61,9 +61,9 @@ export class Bot {
         }
     }
 
-    emit(event: string, data: any) {
+    emit(event: string, ...data: any) {
         if (this.socket && this.socket.connected && this.roomCode) {
-            this.socket.emit(event, data);
+            this.socket.emit(event, ...data);
         }
     }
 
@@ -94,6 +94,9 @@ export class Bot {
 
         // Bot get ban (mostly)
         this.socket.on("kicked", (reason: any) => {
+            console.log(reason);
+            console.log(this.roomCode);
+            
             if (this.status == BotStatus.ACTIVE) {
                 this.stop();
             }

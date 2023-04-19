@@ -11,7 +11,6 @@ function log(string: string) {
  *
  * @packageDocumentation
  */
-
 export namespace reCaptcha {
 
     var browser: any;
