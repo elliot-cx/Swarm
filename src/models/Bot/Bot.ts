@@ -3,5 +3,6 @@ export type Bot = {
     auth: any,
     status: string,
     type: string,
-    name: string
+    name: string,
+    message: string
 }
