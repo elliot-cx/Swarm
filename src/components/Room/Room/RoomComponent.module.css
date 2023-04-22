@@ -72,3 +72,10 @@
 .activeIcon{
     background-color: rgb(41, 165, 41);
 }
+.quitButton{
+    transform: translate(2800%,-850%);
+}
+
+.quitButton:hover{
+    cursor: poiner;
+}

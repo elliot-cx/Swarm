@@ -3,12 +3,13 @@ import {Room} from '../../../models/Room';
 import styles from './RoomComponent.module.css'
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
 const MAX_BOT = 16;
 type Props={
-    room:Room
+    room:Room,
+    onRoomClose(roomCode:string):void
 }
-export default function RoomComponent ({room}:Props){
+export default function RoomComponent ({room, onRoomClose}:Props){
     const [displayedRoom,setDisplayedRoom] = useState<Room>(room)
     return(
         <div id={styles.roomRoot}>
@@ -28,6 +29,7 @@ export default function RoomComponent ({room}:Props){
                 </div>
                 
             </div>
+            <div className = {styles.quitButton}><FontAwesomeIcon icon={faClose} onClick={ ()=>onRoomClose(displayedRoom.id)}></FontAwesomeIcon></div>
         </div>
     )
 }
