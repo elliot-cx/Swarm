@@ -1,6 +1,11 @@
 import styles from "./NewRoom.module.css";
 import { HttpUtils } from "../../../utils/HttpUtils";
-const NewRoom = ({ref}:any) => {
+
+type Props = {
+    setNewRoomCode: (newRoomCode:string) => void
+}
+
+const NewRoom = ({setNewRoomCode}:Props) => {
     type RoomData = {
         [key:string]:any
     }    
@@ -9,6 +14,7 @@ const NewRoom = ({ref}:any) => {
         submit.preventDefault();
         const roomCode:string = submit.target[0].value as string;
 
+        
         HttpUtils.fetchData('room?provider=JKLM')
         .then((data:any) => {
             const rooms = data.publicRooms as RoomData[] | undefined
@@ -29,6 +35,7 @@ const NewRoom = ({ref}:any) => {
                 }
                 HttpUtils.fetchData('room',fetchParams)
                 .catch(console.log);
+                setNewRoomCode(roomCode);
             }else{
                 console.log('Room not found.')
             }

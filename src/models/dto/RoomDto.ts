@@ -6,6 +6,6 @@ export type RoomDto = {
     type:string;
     nbPlayers:number,
     isActive:boolean,
-    link:string,
+    link?:string,
     bots:Bot[]
 }

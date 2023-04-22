@@ -1,14 +1,13 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import ActiveRooms from '../../components/Room/ActiveRooms/ActiveRooms';
 import NewRoom from '../../components/Room/NewRoom/NewRoom';
 import Section from '../../components/Section/Section';
 import styles from './HomePage.module.css'
 
 export default function HomePage(){
-    type ActiveRoomRefType = {
-        fetchAllRooms():void;
-    }
-    const activeRoomsRef = useRef<ActiveRoomRefType> (null);
+
+    const [newRoomCode, setNewRoomCode] = useState<string>('');
+
     const tutorial = () => {
         return(
             <div className={styles.tutorial}>
@@ -31,7 +30,7 @@ export default function HomePage(){
             classNames={[styles.homeSection]}
             text="Cette application vous permet de contrôler jusqu'à 16 bots de différents types : spam, cheat et bientôt tracker."
             contentChildrenNodes={tutorial()}></Section>
-        <Section title1="Rooms actives" contentChildrenNodes={<><NewRoom activeRoomRef={activeRoomsRef}></NewRoom><ActiveRooms ref={activeRoomsRef}></ActiveRooms></>}></Section>
+        <Section title1="Rooms actives" contentChildrenNodes={<><NewRoom setNewRoomCode={setNewRoomCode}></NewRoom><ActiveRooms newRoomCode={newRoomCode}></ActiveRooms></>}></Section>
     </main>
     );
 }

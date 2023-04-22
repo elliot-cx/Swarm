@@ -19,7 +19,7 @@ export default function RoomComponent ({room, onRoomClose}:Props){
                 <div className={styles.roomInfo}>
                     <p>Game: {displayedRoom.type} </p>
                     <p>Players: {displayedRoom.nbPlayers} </p>
-                    <p>Bots: {displayedRoom.bots.length} / {MAX_BOT}</p>
+                    {/* <p>Bots: { displayedRoom.bots.length} / {MAX_BOT}</p> */}
                 </div>
             </div>
             <div className={styles.columnContainer}>
