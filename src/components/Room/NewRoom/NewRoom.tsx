@@ -14,7 +14,7 @@ const NewRoom = ({setNewRoomCode}:Props) => {
         submit.preventDefault();
         const roomCode:string = submit.target[0].value as string;
 
-        
+
         HttpUtils.fetchData('room?provider=JKLM')
         .then((data:any) => {
             const rooms = data.publicRooms as RoomData[] | undefined

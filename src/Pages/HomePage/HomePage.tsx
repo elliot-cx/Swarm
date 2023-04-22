@@ -25,7 +25,7 @@ export default function HomePage(){
     return(
     <main id={styles.homeRoot}>
         <Section 
-            title1='Bienvenue sur SwarmBot'
+            title1= {<>Bienvenue sur <b>SwarmBot</b></>}  
             title2= {<h2>Votre outil de <b>spam, troll et cheat</b> sur JKLM</h2>} 
             classNames={[styles.homeSection]}
             text="Cette application vous permet de contrôler jusqu'à 16 bots de différents types : spam, cheat et bientôt tracker."

@@ -21,7 +21,7 @@ type Props = {
   classNames?:string[]
   id?:string
   linksDivClasses?:string[],
-  title1?:string | ReactNode
+title1?:string | ReactNode
   title2?:string | ReactNode
   text?:string | ReactNode
   links?:Array<Link>,

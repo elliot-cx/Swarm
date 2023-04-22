@@ -6,20 +6,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
 const MAX_BOT = 16;
 type Props={
-    room:Room,
+    room:Room|any,
     onRoomClose(roomCode:string):void
 }
 export default function RoomComponent ({room, onRoomClose}:Props){
-    const [displayedRoom,setDisplayedRoom] = useState<Room>(room)
+    // TODO: fix room object being an array
+    room = room[0] as Room; // DISGUTANG
+    const [displayedRoom,_] = useState<Room>(room);
+    console.log(`in RoomComponent ${JSON.stringify(displayedRoom)}`);
+    console.log(`room name : ${displayedRoom.name}`);
     return(
         <div id={styles.roomRoot}>
             <div className={styles.columnContainer}>
                 <h1>{displayedRoom.id}</h1>
                 <h2>{displayedRoom.name}</h2>
                 <div className={styles.roomInfo}>
-                    <p>Game: {displayedRoom.type} </p>
-                    <p>Players: {displayedRoom.nbPlayers} </p>
-                    {/* <p>Bots: { displayedRoom.bots.length} / {MAX_BOT}</p> */}
+                    <p>Game: <b>{  displayedRoom.type }</b> </p>
+                    <p>Players: <b>{ displayedRoom.nbPlayers }</b></p>
+                    <p>Bots: <b>{ displayedRoom.bots.length } / { MAX_BOT }</b></p>
                 </div>
             </div>
             <div className={styles.columnContainer}>

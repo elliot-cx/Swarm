@@ -1,6 +1,6 @@
 #roomRoot{
     display: grid;
-    grid-template-rows: 1fr 3fr 1fr;
+    grid-template-rows: 1fr 10fr 1fr;
     grid-template-columns: 2fr 1fr;
     place-items: center;
     width: 60%;
@@ -81,4 +81,14 @@
 
 #roomRoot > *:not(.activityIconContainer):not(.quitButton){
     grid-row: 2;
+}
+
+#roomRoot b:nth-child(1) {
+    color: #af4242;
+}
+#roomRoot b:nth-child(2) {
+    color: #3241c7;
+}
+#roomRoot b:nth-child(3) {
+    color: #9d32c7;
 }
