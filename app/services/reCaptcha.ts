@@ -1,6 +1,8 @@
-import {Page, executablePath } from 'puppeteer';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha';
 import chalk from 'chalk';
-import puppeteer from 'puppeteer-core';
+import { Page } from 'puppeteer';
 
 function log(string: string) {
     console.log(chalk.blue("[reCaptcha]"), string);
@@ -17,11 +19,13 @@ export namespace reCaptcha {
     var page: Page;
 
     export async function initCaptchaSolver() {
-        browser = await puppeteer.launch({ executablePath: executablePath() });
+        puppeteer.use(StealthPlugin());
+        puppeteer.use(RecaptchaPlugin())
+        browser = await puppeteer.launch({ executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" });
         log("Init completed");
         log("Loading JKLM.FUN...");
         page = await browser.newPage();
-        await page.setViewport({ width: 1080, height: 1024 });
+        await page.setViewport({ width: 1920, height: 1080 });
         await page.goto('https://jklm.fun/FUCK',{
             waitUntil: "domcontentloaded"
         });
@@ -39,7 +43,6 @@ export namespace reCaptcha {
                 });
             });
         });`);
-
         return token;
     }
 
