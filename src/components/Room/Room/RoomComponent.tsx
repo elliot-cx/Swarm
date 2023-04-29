@@ -11,11 +11,8 @@ type Props={
 }
 export default function RoomComponent ({room, onRoomClose}:Props){
     // TODO: fix room object being an array
-    room = room[0] as Room; // DISGUTANG
     const [displayedRoom,_] = useState<Room>(room);
-    console.log(`in RoomComponent ${JSON.stringify(displayedRoom)}`);
-    console.log(`room name : ${displayedRoom.name}`);
-    return(
+    return displayedRoom ?(
         <div id={styles.roomRoot}>
             <div className={styles.columnContainer}>
                 <h1>{displayedRoom.id}</h1>
@@ -31,9 +28,8 @@ export default function RoomComponent ({room, onRoomClose}:Props){
                 <div className={styles.activityIconContainer}>
                     <div className={ `${styles.activityIcon} ${displayedRoom.isActive ? styles.ativeIcon : styles.inactiveIcon}`}></div>
                 </div>
-                
             </div>
             <div className = {styles.quitButton}><FontAwesomeIcon icon={faClose} onClick={ ()=>onRoomClose(displayedRoom.id)}></FontAwesomeIcon></div>
         </div>
-    )
+    ) : <></>
 }

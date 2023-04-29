@@ -19,7 +19,7 @@ export default function RoomsPage() {
         </div>
     )
     const BotsPanel = () => (
-        <div className={styles.botsPanel}>
+        <div className={styles.botsPanel }>
             <div className={styles.botList}>
                 {room?.bots.map((bot: Bot, key: number) => {
                     return <div key={key}>
@@ -44,17 +44,8 @@ export default function RoomsPage() {
     }
 
     return (
-        // TODO : un form pour chosisir le type puis un deuxieme pour renseigner les parametres (uwu)
         <div className={styles.roomRoot}>
-            <Section title1={room?.name} title2={`Gérer la salle ${room?.id}`} contentChildrenNodes={
-                <>
-                    <form onSubmit={handleBotsFormSubmit} className={styles.botsForm}>
-                        <label>Ajouter des bots</label>
-                        <input type="text" name='nbBots' placeholder="Nombre de bots"></input>
-                        <input className={styles.submit} type='submit' value='lesgo'></input>
-                    </form>
-                </>
-            }></Section>
+            <h1>{room?.name}</h1>
         </div>
     )
 }

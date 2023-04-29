@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import ActiveRooms from '../../components/Room/ActiveRooms/ActiveRooms';
 import NewRoom from '../../components/Room/NewRoom/NewRoom';
 import Section from '../../components/Section/Section';
