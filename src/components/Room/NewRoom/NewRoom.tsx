@@ -1,6 +1,8 @@
 import styles from "./NewRoom.module.css";
 import { HttpUtils } from "../../../utils/HttpUtils";
 import { useState } from "react";
+import { RoomService } from "../../../services/Roomservice";
+import { RoomDto } from "../../../models/dto/RoomDto";
 
 type Props = {
     setNewRoomCode: (newRoomCode:string) => void
@@ -15,25 +17,12 @@ const NewRoom = ({setNewRoomCode}:Props) => {
         submit.preventDefault();
         const roomCode:string = submit.target[0].value as string;
 
-        HttpUtils.fetchData( 'room?provider=JKLM' )
-        .then(( data:any) => {
-            const rooms = data.publicRooms as RoomData[] | undefined
+
+        RoomService.getAllRoomsFromJKLM()
+         .then((rooms:RoomDto[]) => {
             const room = rooms ? rooms.find((room:RoomData) => room.roomCode===roomCode) : undefined;
             if(room){
-                const postData = {
-                    id:room.roomCode,
-                    name:room.name,
-                    type:room.gameId,
-                    nbPlayers:Number(room.playerCount)
-                }; 
-                const fetchParams = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(postData)
-                }
-                HttpUtils.fetchData('room',fetchParams)
+                RoomService.postRoom(room)
                 .then( _ => setNewRoomCode(roomCode))
                 .catch(console.log);
             }else{

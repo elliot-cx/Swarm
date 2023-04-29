@@ -5,14 +5,21 @@ import { Room } from '../../models/Room';
 import RoomComponent from '../../components/Room/Room/RoomComponent';
 import Section from '../../components/Section/Section';
 import { Bot } from '../../models/Bot/Bot';
+import { RoomMapper } from '../../mapper/RoomMapper';
+import { RoomDto } from '../../models/dto/RoomDto';
+import { RoomService } from '../../services/Roomservice';
 
 export default function RoomsPage() {
-    const roomId = new URLSearchParams(window.location.search).get("id");
-    const [room, setRoom] = useState<Room | undefined>(undefined);
+    
+    const roomId = new URLSearchParams(window.location.search).get("id") as string;
+    const [room, setRoom] = useState<Room>({id:"",name:"",type:"",nbPlayers:0,isActive:false, bots:[]});
+
     useEffect(() => {
-        HttpUtils.fetchData<Room>(`room/${roomId}`)
-            .then((room: Room) => { setRoom(room); });
+        RoomService.getRoomById(roomId)
+        .then((room: RoomDto) => { setRoom(RoomMapper.getRoomDoFromDto(room));})
+        .then(() => console.log('after fetch: '+JSON.stringify(room)));
     }, [])
+
     const RoomPanel = () => (
         <div className={styles.roomPanel}>
             <form></form>
@@ -45,7 +52,9 @@ export default function RoomsPage() {
 
     return (
         <div className={styles.roomRoot}>
-            <h1>{room?.name}</h1>
+            <div className= { styles.roomPageSection } >
+                <h1 className={ styles.roomNameTitle }>{room?.name}</h1>
+            </div>
         </div>
     )
 }

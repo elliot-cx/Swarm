@@ -12,7 +12,7 @@ type Props={
 export default function RoomComponent ({room, onRoomClose}:Props){
     // TODO: fix room object being an array
     const [displayedRoom,_] = useState<Room>(room);
-    return displayedRoom ?(
+    return displayedRoom && displayedRoom.id ?(
         <div id={styles.roomRoot}>
             <div className={styles.columnContainer}>
                 <h1>{displayedRoom.id}</h1>
@@ -20,7 +20,7 @@ export default function RoomComponent ({room, onRoomClose}:Props){
                 <div className={styles.roomInfo}>
                     <p>Game: <b>{  displayedRoom.type }</b> </p>
                     <p>Players: <b>{ displayedRoom.nbPlayers }</b></p>
-                    <p>Bots: <b>{ displayedRoom.bots.length } / { MAX_BOT }</b></p>
+                    <p>Bots: <b>{ displayedRoom?.bots.length ?? 0 } / { MAX_BOT }</b></p>
                 </div>
             </div>
             <div className={styles.columnContainer}>

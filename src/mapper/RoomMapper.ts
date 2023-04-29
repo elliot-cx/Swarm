@@ -4,8 +4,6 @@ import { RoomDto } from "../models/dto/RoomDto"
 
 export namespace RoomMapper {
 
-    const isArray = (obj: any): boolean => obj[0] ? true : false;
-
     export const isRoomData = (roomDto:any): boolean => roomDto.id && roomDto.name  && roomDto.type  && roomDto.nbPlayers  && roomDto.isActive ;
 
     const deleteLinkField = (roomDto:RoomDto):Room => {
@@ -14,7 +12,10 @@ export namespace RoomMapper {
     };
 
     // Return roomDto[0] if isArray else return roomDto
-    export const getRoomDoFromDto = (roomDto: RoomDto | RoomDto[]): Room =>  isArray(roomDto) ? (roomDto as RoomDto[])[0] : deleteLinkField(roomDto as RoomDto);
-
+    export const getRoomDoFromDto = (roomDto: RoomDto ): Room =>{
+    if((roomDto as any).success){
+        roomDto = (roomDto as any).success;
+    }
+    return deleteLinkField(roomDto as RoomDto)};
 }
 
