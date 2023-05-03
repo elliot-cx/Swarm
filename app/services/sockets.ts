@@ -3,8 +3,8 @@ import { Socket } from 'socket.io';
 import { RoomServices } from './room';
 import chalk from 'chalk';
 
-function log(string:string) {
-    console.log(chalk.magenta("[socket]"),string);
+function log(string: string) {
+    console.log(chalk.magenta("[socket]"), string);
 }
 
 /**
@@ -22,7 +22,11 @@ export namespace SocketIOService {
      */
     export function initSockets(server: Server) {
         log("Init socket server");
-        io = io(server);
+        io = io(server, {
+            cors: {
+                origin: '*',
+            }
+        });
         io.on('connection', (socket: Socket) => {
             socket.on('join', (roomCode: string, callback: Function) => {
                 const room = RoomServices.getRoomByID(roomCode);
@@ -30,7 +34,7 @@ export namespace SocketIOService {
                     socket.join(room.id);
                 }
             });
-            socket.on('disconnect', () => { });
+            socket.on('disconnect', () => {});
         });
         log("Sockets Service Ready !");
     }

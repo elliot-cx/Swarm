@@ -9,9 +9,9 @@ const router = express.Router();
 router.get("/", async (req: Request, res: Response) => {
     const provider = req.query.provider as string;
     if (provider == "JKLM") {
-        res.json(await JklmService.getAllRoomsFromJKLM());
+        res.json({ "success": await JklmService.getAllRoomsFromJKLM()});
     }else{
-        res.json(RoomServices.getAllRooms());
+        res.json({ "success": await RoomServices.getAllRooms() });
     }
 });
 
