@@ -2,13 +2,8 @@ import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
 
 export default function Header(){
-    const logoClick = (e:any)=>{
+    const logoClick = () =>{
         window.location.href='./';
-    };
-    
-    const navButtonClick = (e:Event) =>{
-        const target = e.target as any;
-        if(target) target.classList.add('clicked');
     };
 
     return(
