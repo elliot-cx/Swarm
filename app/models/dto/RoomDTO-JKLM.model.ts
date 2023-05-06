@@ -5,5 +5,9 @@ export type RoomJKLMDtoModel = {
     gameId:string,
     playerCount: number,
     beta: unknown, // need testing with beta game
-    details:string    
+    details:string
+}
+
+export type JKLMRoomListModel = {
+    publicRooms: RoomJKLMDtoModel []
 }

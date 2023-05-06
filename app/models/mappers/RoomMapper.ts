@@ -1,11 +1,11 @@
 import { Room } from "../room";
-import {RoomJKLMDtoModel} from "../dto/RoomDTO-JKLM.model";
+import {JKLMRoomListModel, RoomJKLMDtoModel} from "../dto/RoomDTO-JKLM.model";
 import {RoomDto} from "../dto/RoomDTO.model";
 import {RoomServices} from "../../services/room";
 
 export namespace RoomMapper {
 
-    export const getDtoFromJKLMRoomResponse = (res: any): RoomDto[] => {
+    export const getDtoFromJKLMRoomResponse = (res: JKLMRoomListModel): RoomDto[] => {
         // Create the RoomDto array
         const roomsDto: RoomDto[] = [];
         // Check response
@@ -23,6 +23,17 @@ export namespace RoomMapper {
             });
         }
         return roomsDto;
+    }
+
+    const getRoomDtoFromJKLMDto = (jklmDto: RoomJKLMDtoModel ): RoomDto => {
+        // Map jklm room to Dto room
+        return {
+            id: jklmDto.roomCode as string,
+            name: jklmDto.name as string,
+            type: jklmDto.gameId as string,
+            nbPlayers: jklmDto.playerCount as number,
+            bots: []
+        }
     }
 
     export const getDtoFromDoRoom = (room: Room): RoomDto => {
