@@ -4,6 +4,6 @@ export type RoomDto = {
     id: string,
     name: string,
     type: string,
-    nbPlayer: number,
+    nbPlayers: number,
     bots: Bot[]
 }
