@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { RoomServices } from "../services/room";
 import { JklmService } from "../services/jklm";
 import { BotAction } from "../models/bots/Bot";
+import { RoomMapper } from "../models/mappers/RoomMapper";
 
 const router = express.Router();
 
@@ -9,7 +10,8 @@ const router = express.Router();
 router.get("/", async (req: Request, res: Response) => {
     const provider = req.query.provider as string;
     if (provider == "JKLM") {
-        res.json({ "success": await JklmService.getAllRoomsFromJKLM()});
+       
+        res.json({ "success": RoomMapper.getDtoFromJKLMRoomResponse(await JklmService.getAllRoomsFromJKLM())});
     }else{
         res.json({ "success": await RoomServices.getAllRooms() });
     }
