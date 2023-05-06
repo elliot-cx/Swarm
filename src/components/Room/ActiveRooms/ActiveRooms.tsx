@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import {Room} from '../../../models/Room';
 import styles from './ActiveRooms.module.css';
 import RoomComponent from '../Room/RoomComponent';
-import { RoomDto } from '../../../models/dto/RoomDto';
-import { RoomMapper } from '../../../mapper/RoomMapper';
+import { RoomResponseList } from '../../../models/dto/RoomResponse.model';
 import { RoomService } from '../../../services/RoomService';
+import { RoomMapper } from '../../../mapper/RoomMapper';
 
 type Props = {
     newRoomCode:string
@@ -12,19 +12,22 @@ type Props = {
 
 const ActiveRooms= ({newRoomCode}:Props) => {
     const [rooms,setRooms] = useState<Room[]>([]);
-    const fetchAllRooms = () =>{    
-        RoomService.getAllRooms()
-            .then((data) => {
-                setRooms([]);
-                for(let room of data as Room[]){
-                    room = RoomMapper.getRoomDoFromDto(room) as Room;
-                    if(!rooms.includes(room)) pushRoom(room);
-                }
-            });
-    };
 
-    const pushRoom = (room:Room) => {
-        setRooms([...rooms as Room[], room]);
+    const fetchAllRooms = () =>{ 
+        console.log('fetchAllRooms');
+        RoomService.getAllRooms()
+            .subscribe((data: RoomResponseList) => {
+                const newRooms = (data?.success ? data.success : data) as Room[];
+                for(const newRoom of newRooms){
+                    if(rooms.includes(newRoom)){
+                        const index = newRooms.findIndex(element => element.id === newRoom.id);
+                        if(index > -1) newRooms.splice(index,1);
+                    }
+                }
+                const newRoomList = rooms.concat(RoomMapper.getRoomDoFromRoomDtoList(newRooms));
+                setRooms(newRoomList);  
+            });
+
     };
     
     useEffect(()=>{
@@ -36,11 +39,10 @@ const ActiveRooms= ({newRoomCode}:Props) => {
         RoomService.getRoomById(newRoomCode)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .subscribe((data: any) => {
-                const room = (data?.success ? data.success : data) as RoomDto;
+                const room = (data?.success ? data.success : data) as Room;
                 // Map the room dto to a Room object
-                const newRoom = RoomMapper.getRoomDoFromDto( room ) as Room;
                 // Add the room to the list
-                if(!rooms.includes( room )) setRooms( [...rooms as Room[], newRoom] );                
+                if(!rooms.includes( room )) setRooms( [...rooms as Room[], room] );                
             });
     },[newRoomCode]);
 

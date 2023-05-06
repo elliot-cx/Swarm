@@ -2,8 +2,7 @@
 import styles from './NewRoom.module.css';
 import { useState } from 'react';
 import { RoomService } from '../../../services/RoomService';
-import { map } from 'rxjs';
-import { RoomDto } from '../../../models/dto/RoomDto';
+import { RoomResponseList } from '../../../models/dto/RoomResponse.model';
 
 type Props = {
     setNewRoomCode: (newRoomCode:string) => void
@@ -13,19 +12,17 @@ const NewRoom = ({setNewRoomCode}:Props) => {
     const [ buttonClicked,setButtonClicked ] = useState<boolean>( false );
     const postRoomData = ( submit: any ) => {
         submit.preventDefault();
-        const roomCode:string = submit.target[0].value as string;
-
+    
         RoomService.getAllRoomsFromJKLM()
-            .pipe(
-                map( (data: any) => data.publicRooms ),
-            // find( (room: any) => room.roomCode === roomCode )
-            )
-            .subscribe((room: RoomDto) => {
+            .subscribe( (data: RoomResponseList) => {
+                const roomCode:string = submit.target[0].value as string;
+                const room = data.success.find( room => room.id === roomCode);
                 if(room){
                     RoomService.postRoom(room)
                         .subscribe( (data: any) => {
-                            console.log(data);
-                            setNewRoomCode(roomCode);
+                            if (data?.success ?? false) {
+                                setNewRoomCode(roomCode);
+                            }
                         });
                 }else{
                     console.log('Room not found. rooms', room);

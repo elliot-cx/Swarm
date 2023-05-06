@@ -30,7 +30,9 @@ export default function HomePage(){
                 classNames={[styles.homeSection]}
                 text='Cette application vous permet de contrôler jusqu&aposà 16 bots de différents types : spam, cheat et bientôt tracker.'
                 contentChildrenNodes={tutorial()}></Section>
-            <Section title1='Rooms actives' contentChildrenNodes={<><NewRoom setNewRoomCode={setNewRoomCode}></NewRoom><ActiveRooms newRoomCode={newRoomCode}></ActiveRooms></>}></Section>
+            <Section title1='Rooms actives' contentChildrenNodes = {
+                <><NewRoom setNewRoomCode={setNewRoomCode}></NewRoom><ActiveRooms newRoomCode={newRoomCode}></ActiveRooms></>
+            }></Section>
         </main>
     );
 }

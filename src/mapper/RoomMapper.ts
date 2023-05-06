@@ -2,26 +2,19 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/prefer-namespace-keyword */
 import { Room } from '../models/Room';
-import { RoomDto } from '../models/dto/RoomDto';
+import { PostRoomData } from '../models/dto/RoomResponse.model';
 
 export module RoomMapper {
 
-    export const isRoomData = (roomDto: any): boolean => roomDto.id && roomDto.name  && roomDto.type  && roomDto.nbPlayers  && roomDto.isActive ;
+    export const isRoomData = (roomDto: any ): boolean => roomDto.id && roomDto.name  && roomDto.type  && roomDto.nbPlayers  && roomDto.isActive ;
 
-    const deleteLinkField = (roomDto: RoomDto):Room => {
-        delete roomDto.link;
-        return roomDto;
+    export const getRoomDoFromRoomDto = (roomDto: PostRoomData): Room => {
+        const room: any = roomDto as any;
+        room.isActive = false;
+        return room as Room; 
     };
 
-    // Return roomDto[0] if isArray else return roomDto
-    export const getRoomDoFromDto = (roomDto: RoomDto ): Room =>{
-        // Get the 'real data' if it has been wrapped in a 'success' field
-        if((roomDto as any).success){
-            roomDto = (roomDto as any).success;
-        }
-        // Delete the unwanted link field
-        return deleteLinkField(roomDto as RoomDto);
-    };
+    export const getRoomDoFromRoomDtoList = (roomDtoList: PostRoomData[]): Room[] => roomDtoList.map((roomDto: PostRoomData) => getRoomDoFromRoomDto(roomDto));
 
     // Convert room objects sent by KJKLM into usable DO objects
     export const getRoomDoFromDtoJKLM = (roomDto: any): Room => ({
@@ -32,6 +25,5 @@ export module RoomMapper {
         isActive: false,
         bots: []
     });
-    
 }
 

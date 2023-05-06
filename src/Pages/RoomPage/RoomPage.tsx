@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import styles from './RoomPage.module.css';
 import { Room } from '../../models/Room';
 import { Bot } from '../../models/Bot/Bot';
-import { RoomMapper } from '../../mapper/RoomMapper';
-import { RoomDto } from '../../models/dto/RoomDto';
+import { RoomResponse } from '../../models/dto/RoomResponse.model';
 import { RoomService } from '../../services/RoomService';
+import { RoomMapper } from '../../mapper/RoomMapper';
 
 export default function RoomsPage() {
     
@@ -13,14 +13,8 @@ export default function RoomsPage() {
 
     useEffect(() => {
         RoomService.getRoomById(roomId)
-            .subscribe((room: RoomDto) => { setRoom(RoomMapper.getRoomDoFromDto(room));});
+            .subscribe( (roomResponse: RoomResponse) =>  setRoom(RoomMapper.getRoomDoFromDtoJKLM(roomResponse.success)));
     }, []);
-
-    const RoomPanel = () => (
-        <div className={styles.roomPanel}>
-            <form></form>
-        </div>
-    );
 
     const BotsPanel = () => (
         <div className={styles.botsPanel }>
@@ -37,12 +31,6 @@ export default function RoomsPage() {
             </div>
         </div>
     );
-
-    const handleBotsFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.target as HTMLFormElement);
-        const nbBots = formData.get('nbBots');
-    };
 
     return (
         <div className={styles.roomRoot}>
