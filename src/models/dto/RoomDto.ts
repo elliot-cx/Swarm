@@ -1,4 +1,4 @@
-import { Bot } from "../Bot/Bot";
+import { Bot } from '../Bot/Bot';
 
 export type RoomDto = {
     id:string,

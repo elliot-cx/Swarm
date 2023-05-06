@@ -8,44 +8,48 @@ import { RoomService } from '../../services/RoomService';
 
 export default function RoomsPage() {
     
-    const roomId = new URLSearchParams(window.location.search).get("id") as string;
-    const [room, setRoom] = useState<Room>({id:"",name:"",type:"",nbPlayers:0,isActive:false, bots:[]});
+    const roomId = new URLSearchParams(window.location.search).get('id') as string;
+    const [room, setRoom] = useState<Room>({id:'',name:'',type:'',nbPlayers:0,isActive:false, bots:[]});
 
     useEffect(() => {
         RoomService.getRoomById(roomId)
-        .subscribe((room: RoomDto) => { setRoom(RoomMapper.getRoomDoFromDto(room));})
-    }, [])
+            .subscribe((room: RoomDto) => { setRoom(RoomMapper.getRoomDoFromDto(room));});
+    }, []);
 
     const RoomPanel = () => (
         <div className={styles.roomPanel}>
             <form></form>
         </div>
-    )
+    );
+
     const BotsPanel = () => (
         <div className={styles.botsPanel }>
             <div className={styles.botList}>
                 {room?.bots.map((bot: Bot, key: number) => {
-                    return <div key={key}>
-                        <h1>{bot.name}</h1>
-                        <p>{`Type: ${bot.type}`}</p>
-                        <div className={`${bot.status}Bot`}></div>
-                    </div>
+                    return (
+                        <div key={key}>
+                            <h1>{bot.name}</h1>
+                            <p>{`Type: ${bot.type}`}</p>
+                            <div className={`${bot.status}Bot`}></div>
+                        </div>
+                    );
                 })}
             </div>
         </div>
-    )
+    );
 
     const handleBotsFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.target as HTMLFormElement);
         const nbBots = formData.get('nbBots');
-    }
+    };
 
     return (
         <div className={styles.roomRoot}>
             <div className= { styles.roomPageSection } >
                 <h1 className={ styles.roomNameTitle }>{room?.name}</h1>
+                {BotsPanel()}
             </div>
         </div>
-    )
+    );
 }

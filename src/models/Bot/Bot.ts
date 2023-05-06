@@ -1,6 +1,6 @@
 export type Bot = {
     token: string,
-    auth: any,
+    auth: string,
     status: string,
     type: string,
     name: string,
