@@ -4,16 +4,16 @@ import { Room } from "../models/Room"
 import { HttpUtils } from "../utils/HttpUtils"
 
 export namespace RoomService {
-    export const getAllRooms = ():Promise< RoomDto |RoomDto [] > => {
-        return HttpUtils.fetchData('rooms');
+    export const getAllRooms = ():Promise< RoomDto [] > => {
+        return HttpUtils.fetchData('room');
     }
     
     export const getRoomById = (id:string):Promise< RoomDto > => {
-        return HttpUtils.fetchData(`rooms/${id}`);
+        return HttpUtils.fetchData(`room/${id}`);
     }
     
     export const getAllRoomsFromJKLM = (): Promise< RoomDto [] > => {
-        return HttpUtils.fetchData('rooms?provider=JKLM');
+        return HttpUtils.fetchData('room?provider=JKLM');
     }
 
     export const postRoom= (room:Room):Promise< any > => {
