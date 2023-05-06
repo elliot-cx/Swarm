@@ -11,7 +11,6 @@ type Props={
     onRoomClose(roomCode:string):void
 }
 export default function RoomComponent ({room, onRoomClose}:Props){
-    // TODO: fix room object being an array
     const [displayedRoom, _ ] = useState<Room>(room);
     return displayedRoom && displayedRoom.id ?(
         <div id={styles.roomRoot}>

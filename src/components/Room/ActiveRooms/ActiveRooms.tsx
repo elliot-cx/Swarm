@@ -14,7 +14,6 @@ const ActiveRooms= ({newRoomCode}:Props) => {
     const [rooms,setRooms] = useState<Room[]>([]);
 
     const fetchAllRooms = () =>{ 
-        console.log('fetchAllRooms');
         RoomService.getAllRooms()
             .subscribe((data: RoomResponseList) => {
                 const newRooms = (data?.success ? data.success : data) as Room[];
