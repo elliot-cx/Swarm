@@ -20,8 +20,7 @@ async function getRoomLink(roomCode: string): Promise<{ url?: string }> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roomCode })
     });
-    const data = await response.json() as { url?: string };
-    return data;
+    return await response.json() as { url?: string };
 }
 
 /**
