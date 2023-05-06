@@ -1,3 +1,4 @@
+import { Observable, from, of } from "rxjs";
 import { RoomMapper } from "../mapper/RoomMapper";
 import { RoomDto } from "../models/dto/RoomDto"
 import { Room } from "../models/Room"
@@ -8,15 +9,11 @@ export namespace RoomService {
         return HttpUtils.fetchData('room');
     }
     
-    export const getRoomById = (id:string):Promise< RoomDto > => {
-        return HttpUtils.fetchData(`room/${id}`);
-    }
+    export const getRoomById = (id:string): Observable <RoomDto> => from(HttpUtils.fetchData(`room/${id}`) as Promise< RoomDto >);
     
-    export const getAllRoomsFromJKLM = (): Promise< RoomDto [] > => {
-        return HttpUtils.fetchData('room?provider=JKLM');
-    }
+    export const getAllRoomsFromJKLM = (): Observable <RoomDto[]> => from( HttpUtils.fetchData('room?provider=JKLM') as Promise < RoomDto[] > );
 
-    export const postRoom= (room:Room):Promise< any > => {
+    export const postRoom= (room:Room): Observable< any > => {
         const roomDto = RoomMapper.getRoomDoFromDto(room);
         const postData = {
             id:roomDto.id,
@@ -31,7 +28,7 @@ export namespace RoomService {
             }, 
             body: JSON.stringify(postData)
         }
-        return HttpUtils.fetchData('room',fetchParams)
+        return from(HttpUtils.fetchData('room',fetchParams));
     }
 }
 

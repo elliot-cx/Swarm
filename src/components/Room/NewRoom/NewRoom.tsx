@@ -1,30 +1,32 @@
 import styles from "./NewRoom.module.css";
-import { HttpUtils } from "../../../utils/HttpUtils";
 import { useState } from "react";
-import { RoomService } from "../../../services/Roomservice";
+import { RoomService } from "../../../services/RoomService";
+import { find, map } from "rxjs";
 import { RoomDto } from "../../../models/dto/RoomDto";
+import { RoomMapper } from "../../../mapper/RoomMapper";
 
 type Props = {
     setNewRoomCode: (newRoomCode:string) => void
 }
 
-const NewRoom = ({setNewRoomCode}:Props) => {
-    type RoomData = {
-        [key:string]:any
-    }    
+const NewRoom = ({setNewRoomCode}:Props) => {    
     const [ buttonClicked,setButtonClicked ] = useState<boolean>( false );
     const postRoomData = ( submit:any ) => {
         submit.preventDefault();
         const roomCode:string = submit.target[0].value as string;
 
-
         RoomService.getAllRoomsFromJKLM()
-         .then((rooms:RoomDto[]) => {
-            const room = rooms ? rooms.find((room:RoomData) => room.roomCode===roomCode) : undefined;
-            if(room){
+        .pipe(
+            map( (data: any) => data.publicRooms ),
+            find( (room: any) => room.roomCode === roomCode )
+        )
+        .subscribe((room: RoomDto) => {
+            if(room && room.id){
                 RoomService.postRoom(room)
-                .then( _ => setNewRoomCode(roomCode))
-                .catch(console.log);
+                .subscribe( (data: any) => {
+                    console.log(data);
+                    setNewRoomCode(roomCode);
+                });
             }else{
                 console.log('Room not found.')
             }

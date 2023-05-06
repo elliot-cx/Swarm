@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
-import { HttpUtils } from '../../utils/HttpUtils';
 import styles from './RoomPage.module.css';
 import { Room } from '../../models/Room';
-import RoomComponent from '../../components/Room/Room/RoomComponent';
-import Section from '../../components/Section/Section';
 import { Bot } from '../../models/Bot/Bot';
 import { RoomMapper } from '../../mapper/RoomMapper';
 import { RoomDto } from '../../models/dto/RoomDto';
-import { RoomService } from '../../services/Roomservice';
+import { RoomService } from '../../services/RoomService';
 
 export default function RoomsPage() {
     
@@ -16,8 +13,7 @@ export default function RoomsPage() {
 
     useEffect(() => {
         RoomService.getRoomById(roomId)
-        .then((room: RoomDto) => { setRoom(RoomMapper.getRoomDoFromDto(room));})
-        .then(() => console.log('after fetch: '+JSON.stringify(room)));
+        .subscribe((room: RoomDto) => { setRoom(RoomMapper.getRoomDoFromDto(room));})
     }, [])
 
     const RoomPanel = () => (
@@ -43,11 +39,6 @@ export default function RoomsPage() {
         event.preventDefault();
         const formData = new FormData(event.target as HTMLFormElement);
         const nbBots = formData.get('nbBots');
-        if (nbBots) {
-            // for(let i = 0; i < nbBots; i++){
-            //     HttpUtils.postData('bot',{roomId:room?.id})
-            // }
-        }
     }
 
     return (
