@@ -6,8 +6,8 @@ import { Room } from "../models/room";
 import fetch from "node-fetch";
 import {RoomMapper} from "../models/mappers/RoomMapper";
 
-// Liste des rooms instanciées
-var rooms: Room[] = [];
+// Map des rooms instanciées
+const roomsMap: Map<string, Room> = new Map<string, Room>();
 
 /**
  * Asynchronously checks if a game room is open and returns the URL
@@ -44,7 +44,11 @@ export namespace RoomServices {
      * @returns An array of all instantiated rooms
      */
     export const getAllRooms = (): Array<Room> => {
-        return rooms;
+        const roomsArray: Room[] = []
+        for (const room of roomsMap.values()) {
+            roomsArray.push(room);
+        }
+        return roomsArray;
     }
 
     // export const getRoomBy = (field: string, val: any): room[] => {
@@ -58,7 +62,7 @@ export namespace RoomServices {
      * @returns The instance of the room, if found, otherwise undefined
      */
     export const getRoomByID = (id: string): Room | undefined => {
-        return rooms.find((room: Room) => room.id == id);
+        return roomsMap.get(id);
     }
 
     /**
@@ -67,9 +71,7 @@ export namespace RoomServices {
      * @returns True if the room was deleted, otherwise false
      */
     export const deleteRoomByID = (id: string): boolean => {
-        const room = getRoomByID(id);
-        rooms = rooms.filter((r: Room) => r.id != id);
-        return !!room;
+        return roomsMap.delete(id)
     }
 
     /**
@@ -82,7 +84,8 @@ export namespace RoomServices {
         if (!r) {
             const result = await getRoomLink(room.id);
             if (result.url) {
-                rooms.push(RoomMapper.getDoFromDtoRoom(room, result.url));
+                const newRoom = RoomMapper.getDoFromDtoRoom(room,result.url);
+                roomsMap.set(room.id,room);
                 return true;
             }
         }

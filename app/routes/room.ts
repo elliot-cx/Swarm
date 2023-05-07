@@ -3,6 +3,8 @@ import { RoomServices } from "../services/room";
 import { JklmService } from "../services/jklm";
 import { BotAction } from "../models/bots/Bot";
 import { RoomMapper } from "../models/mappers/RoomMapper";
+import {Room} from "../models/room";
+import {RoomDto} from "../models/dto/RoomDTO.model";
 
 const router = express.Router();
 
@@ -24,7 +26,15 @@ router.post("/", async (req: Request, res: Response) => {
 
 // Récupère une room avec son ID
 router.get("/:id", (req: Request, res: Response) => {
-    res.json({ "success": RoomServices.getRoomByID(req.params.id) });
+    const room = RoomServices.getRoomByID(req.params.id);
+    if(room){
+        const roomDto: RoomDto | undefined = RoomMapper.getDtoFromDoRoom(room as Room);
+        if(roomDto.id){
+            res.json({ "success": roomDto});
+        }
+    }else {
+        res.json({ "success": false });
+    }
 });
 
 // Supprimer une room
