@@ -44,11 +44,7 @@ export namespace RoomServices {
      * @returns An array of all instantiated rooms
      */
     export const getAllRooms = (): Array<Room> => {
-        const roomsArray: Room[] = []
-        for (const room of roomsMap.values()) {
-            roomsArray.push(room);
-        }
-        return roomsArray;
+        return Array.from(roomsMap.values());
     }
 
     // export const getRoomBy = (field: string, val: any): room[] => {
