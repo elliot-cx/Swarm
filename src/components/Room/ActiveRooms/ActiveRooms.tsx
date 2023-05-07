@@ -14,6 +14,7 @@ const ActiveRooms= ({newRoomCode}:Props) => {
     const [rooms,setRooms] = useState<Room[]>([]);
 
     const fetchAllRooms = () =>{ 
+        console.log('Fetching all rooms');
         RoomService.getAllRooms()
             .subscribe((data: RoomResponseList) => {
                 const newRooms = (data?.success ? data.success : data) as Room[];
@@ -23,8 +24,7 @@ const ActiveRooms= ({newRoomCode}:Props) => {
                         if(index > -1) newRooms.splice(index,1);
                     }
                 }
-                const newRoomList = rooms.concat(RoomMapper.getRoomDoFromRoomDtoList(newRooms));
-                setRooms(newRoomList);  
+                setRooms(rooms.concat(RoomMapper.getRoomDoFromRoomDtoList(newRooms)));  
             });
 
     };
@@ -41,12 +41,15 @@ const ActiveRooms= ({newRoomCode}:Props) => {
                 const room = (data?.success ? data.success : data) as Room;
                 // Map the room dto to a Room object
                 // Add the room to the list
-                if(!rooms.includes( room )) setRooms( [...rooms as Room[], room] );                
+                if( room && !rooms.includes( room ) ){
+                    setRooms( rooms.concat(RoomMapper.getRoomDoFromRoomDtoList([room].flat() )));
+                }               
             });
     },[newRoomCode]);
 
     const onRoomClose = (roomCode: string) => {
         setRooms( rooms.filter(( room: Room ) => room.id!==roomCode ));
+        RoomService.deleteRoom(roomCode);
     };
 
     return(
@@ -55,7 +58,7 @@ const ActiveRooms= ({newRoomCode}:Props) => {
                 ? rooms.map(( room: Room,index: number )=>{
                     return( <RoomComponent onRoomClose= { onRoomClose } key= { index } room= { room }></RoomComponent> );
                 })
-                :  <p>Aucune room n&aposest gérée par l&aposapplication, vous pouvez en ajouter de nouvelles avec le formulaire ci dessous</p>}
+                :  <p>Aucune room n&apos;est gérée par l&apos;application, vous pouvez en ajouter de nouvelles avec le formulaire ci dessous</p>}
         </div>
     );
 };

@@ -39,5 +39,7 @@ export namespace RoomService {
         return from(HttpUtils.fetchData('room',fetchParams));
     };
 
+    export const deleteRoom = (id:string): Observable<unknown> => from(HttpUtils.fetchData(`room/${id}`, {method:'DELETE'}));
+
 }
 

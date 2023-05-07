@@ -15,6 +15,7 @@ const NewRoom = ({setNewRoomCode}:Props) => {
     
         RoomService.getAllRoomsFromJKLM()
             .subscribe( (data: RoomResponseList) => {
+                console.log(data);
                 const roomCode:string = submit.target[0].value as string;
                 const room = data.success.find( room => room.id === roomCode);
                 if(room){

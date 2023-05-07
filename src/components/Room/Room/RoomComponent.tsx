@@ -12,6 +12,7 @@ type Props={
 }
 export default function RoomComponent ({room, onRoomClose}:Props){
     const [displayedRoom, _ ] = useState<Room>(room);
+    console.log('displayedRoom: ',displayedRoom);
     return displayedRoom && displayedRoom.id ?(
         <div id={styles.roomRoot}>
             <div className={styles.columnContainer}>

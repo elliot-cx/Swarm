@@ -11,6 +11,7 @@ export module RoomMapper {
     export const getRoomDoFromRoomDto = (roomDto: PostRoomData): Room => {
         const room: any = roomDto as any;
         room.isActive = false;
+        room.bots = [];
         return room as Room; 
     };
 
