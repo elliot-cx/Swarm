@@ -1,0 +1,62 @@
+.roomRoot{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.roomRoot:hover{
+    padding: 1.2em;
+    box-shadow: 0px 0px 15px 5px black;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all ease 0.5s;
+}
+.roomPageSection {
+    background-color: rgba(0,0,0,0.2);
+    box-shadow: inset 0px 0px 15px 5px black;
+    border-radius: 1em;
+    border: solid 1px rgba(255,255,255,0.2);
+
+}
+.botsPanel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.botsForm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.botsForm > * {
+    width: 100%;
+}
+.botsForm > *:not(label) {
+    margin: 0.2em;
+    background-color: rgba(0,0,0,0.2);
+    color: rgba(255,255,255,0.8);
+    border: solid 1px rgba(255,255,255,0.2) ;
+    padding: 0.3em;
+    border-radius: 0.5em;
+    text-align: center;
+}
+.botsForm > label {
+    color: #903838;
+    font-weight: bolder;
+    font-size: larger;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+    border-bottom: solid 1px rgba(255,255,255,0.2);
+}
+.botsForm > *:not(label):hover {
+    background-color: rgba(0,0,0,0.4);
+}
+.botsForm > .submit{
+    width: 50%;
+}
+
+
+.roomNameTitle {
+    border-color: white;
+}
