@@ -4,6 +4,7 @@ import SpamBot from "../models/bots/SpamBot";
 import TrackerBot from "../models/bots/TrackerBot";
 import { Room } from "../models/room";
 import fetch from "node-fetch";
+import {RoomMapper} from "../models/mappers/RoomMapper";
 
 // Liste des rooms instanciées
 var rooms: Room[] = [];
@@ -51,7 +52,8 @@ export namespace RoomServices {
     // }
 
     /**
-     * Retrieves the instance of a room with the given ID
+     * Retrieves the
+    instance of a room with the given ID
      * @param id The ID of the Swarm room being retrieved
      * @returns The instance of the room, if found, otherwise undefined
      */
@@ -67,7 +69,7 @@ export namespace RoomServices {
     export const deleteRoomByID = (id: string): boolean => {
         const room = getRoomByID(id);
         rooms = rooms.filter((r: Room) => r.id != id);
-        return room ? true : false;
+        return !!room;
     }
 
     /**
@@ -80,10 +82,7 @@ export namespace RoomServices {
         if (!r) {
             const result = await getRoomLink(room.id);
             if (result.url) {
-                room.link = result.url;
-                room.isActive = false;
-                room.bots = [];
-                rooms.push(room);
+                rooms.push(RoomMapper.getDoFromDtoRoom(room, result.url));
                 return true;
             }
         }
