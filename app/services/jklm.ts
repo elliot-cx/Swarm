@@ -16,6 +16,7 @@ export namespace JklmService {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
-        return await response.json();
+        const data = await response.json();
+        return data;
     }
 }
