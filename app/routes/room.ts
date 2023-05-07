@@ -3,7 +3,6 @@ import { RoomServices } from "../services/room";
 import { JklmService } from "../services/jklm";
 import { BotAction } from "../models/bots/Bot";
 import { RoomMapper } from "../models/mappers/RoomMapper";
-import {Room} from "../models/room";
 
 const router = express.Router();
 
