@@ -16,12 +16,13 @@ app.use(express.json());
 app.use("/", router);
 
 app.get("/status", (_,res)=>{
-    res.json({"sucess": status});
+    res.json({"success": status});
 });
 
 // Handle HTTP Requests
 server.listen(PORT,async () => {
     console.log(`Server listening at : http://localhost:${PORT}`);
+    require('child_process').exec(`start http://localhost:${PORT}`);
     SocketIOService.initSockets(server);
     reCaptcha.initCaptchaSolver().then(()=>
         status = "Ready"

@@ -57,4 +57,10 @@ router.get("/:id/:action", (req: Request, res: Response) =>{
     res.json({ "success": RoomServices.manageRoomBots(roomId,action)});
 });
 
+// Modifier les propriétés du BOT
+router.delete("/:id/bot/:botToken", (req: Request, res: Response) => {
+    res.json({"success" : RoomServices.deleteBot(req.params.id, req.params.botToken)})
+});
+
+
 export default router;

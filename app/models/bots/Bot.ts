@@ -5,6 +5,7 @@ import { Utils } from "../../utils/utils";
 import { Authentification } from "../authentification"
 
 export enum BotStatus {
+    CONNECTING = "connecting",
     CONNECTED = "connected",
     BANNED = "banned",
     DISCONNECTED = "disconnected",
@@ -42,7 +43,7 @@ export class Bot {
     constructor(name: string) {
         this.socket = require('socket.io-client');
         this.token = Utils.randomString();
-        this.auth = null;
+        this.auth = BotAuthentificationService.getAuthentification();
         this.name = name;
         this.status = BotStatus.DISCONNECTED;
     }
@@ -68,8 +69,9 @@ export class Bot {
     }
 
     connect(roomCode: string, url: string) {
-        this.socket = this.socket.connect(url);
         this.roomCode = roomCode;
+        this.setStatus(BotStatus.CONNECTING);
+        this.socket = this.socket.connect(url);
 
         this.socket.on("connect", async () => {
             const gcToken = await reCaptcha.resolveCaptcha();
@@ -77,8 +79,8 @@ export class Bot {
                 "roomCode": roomCode,
                 "userToken": this.token,
                 "nickname": this.name,
-                "auth": null,
-                "language": "en-EN",
+                "auth": BotAuthentificationService.getAuthentification(),
+                "language": "fr-FR",
                 "token": gcToken
             };
             this.socket.emit("joinRoom", joinData, (data: any) => {
@@ -88,15 +90,21 @@ export class Bot {
         });
 
         this.socket.on("disconnect", () => {
-            this.setStatus(BotStatus.DISCONNECTED);
             this.socket.removeAllListeners();
+            // Check if first connection got refused
+            if (this.status == BotStatus.CONNECTING) {
+                // Auto reconnect
+                setTimeout(()=>{
+                    this.connect(roomCode, url);
+                },3000);
+            }else{
+                this.setStatus(BotStatus.DISCONNECTED);
+            }
         });
 
         // Bot get ban (mostly)
+        // TODO: Handle kick reasons
         this.socket.on("kicked", (reason: any) => {
-            console.log(reason);
-            console.log(this.roomCode);
-            
             if (this.status == BotStatus.ACTIVE) {
                 this.stop();
             }
@@ -105,14 +113,17 @@ export class Bot {
         });
 
         this.socket.on("connect_error", (err: any) => {
-            console.log(err);
             this.setStatus(BotStatus.DISCONNECTED);
             // Auto reconnect
             this.connect(roomCode, url);
         });
     }
 
-    disconnect() { this.socket.close(); }
+    disconnect() { 
+        try {
+            if (this.socket) this.socket.close(); 
+        } catch (error) { }
+    }
 
     start() { this.setStatus(BotStatus.ACTIVE); }
 

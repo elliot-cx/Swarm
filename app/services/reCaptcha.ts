@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer-extra';
+import RandomUserAgent from 'random-useragent';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha';
 import chalk from 'chalk';
@@ -23,15 +24,54 @@ export namespace reCaptcha {
     export async function initCaptchaSolver() {
         puppeteer.use(StealthPlugin());
         puppeteer.use(RecaptchaPlugin())
-        browser = await puppeteer.launch({ executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", headless:true });
+        browser = await puppeteer.launch({ 
+            executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", 
+            headless:true,
+            args: [
+                `--window-size=${Math.floor(Math.random() * (2000 - 800 + 1) + 800)},${Math.floor(Math.random() * (1200 - 600 + 1) + 600)}`,
+                '--disable-blink-features=AutomationControlled',
+                // `--user-agent=${RandomUserAgent.getRandom()}`,
+                `--no-sandbox`,
+                `--disable-setuid-sandbox`,
+                `--disable-infobars`,
+                `--disable-web-security`,
+                `--disable-features=site-per-process`,
+                `--disable-dev-shm-usage`,
+                `--disable-accelerated-2d-canvas`,
+                `--disable-gpu`,
+                `--disable-extensions`,
+                `--disable-default-apps`,
+                `--disable-sync`,
+                `--disable-background-networking`,
+                `--disable-translate`,
+                `--disable-logging`,
+                `--disable-extensions-file-access-check`,
+                `--disable-component-update`,
+                `--disable-component-extensions-with-background-pages`,
+                `--disable-background-downloads`,
+                `--disable-background-timer-throttling`,
+                `--disable-device-discovery-notifications`,
+                `--disable-desktop-notifications`,
+                `--disable-features=TranslateUI`,
+                `--disable-features=Translate`,
+                `--disable-client-side-phishing-detection`,
+                `--disable-popup-blocking`,
+                `--disable-offer-store-unmasked-wallet-cards`,
+                `--disable-offer-upload-credit-cards`,
+                `--disable-features=AutofillEnableAccountWalletStorage`
+              ] 
+        });
         log("Init completed");
         log("Loading JKLM.FUN...",);
         page = await browser.newPage();
         await page.goto("https://jklm.fun/",{
             waitUntil: "domcontentloaded"
         });
-        await page.waitForSelector("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(1)");
-        await page.click("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(1)");
+        await new Promise(r => setTimeout(r, 5000));
+        await page.waitForSelector("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(6)");
+        await page.click("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(6)");
+        // await page.waitForSelector("body > div > div.home.page > div.columns.section > div.left > div > form > div.line > button");
+        // await page.click("body > div > div.home.page > div.columns.section > div.left > div > form > div.line > button");
         log("reCaptcha Service Ready !");
     }
 

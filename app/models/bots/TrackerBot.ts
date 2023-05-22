@@ -35,7 +35,7 @@ export default class TrackerBot extends Bot {
             case BotStatus.ACTIVE:
                 this.tracking = true;
                 JklmService.getAllRoomsFromJKLM().then((res) => {
-                    this.roomsToCheck = res.publicRooms;
+                    this.roomsToCheck = res;
                     this.checkRoom();
                 });
                 

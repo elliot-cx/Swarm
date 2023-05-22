@@ -22,15 +22,17 @@ export default class ResponderBot extends Bot {
                 this.socket.on("chat", (authProfile: any, message: string) => {
                     // Check if the message is not a message sent by the bot himself
                     if (authProfile.peerId != this.peerId) {
-                        setTimeout(()=>{
-                            this.emit("chat",message);
-                        },this.delay);
+                        setTimeout(() => {
+                            this.emit("chat", message);
+                        }, this.delay);
                     }
                 });
                 break;
             default:
-                this.socket.off("chat");
-                break;
+                try {
+                    this.socket.off("chat");
+                } catch (error) {}
+               
         }
     }
 

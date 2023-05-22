@@ -4,6 +4,7 @@ import SpamBot from "../models/bots/SpamBot";
 import TrackerBot from "../models/bots/TrackerBot";
 import { Room } from "../models/room";
 import fetch from "node-fetch";
+import { JklmService } from "./jklm";
 
 // Liste des rooms instanciées
 var rooms: Room[] = [];
@@ -80,7 +81,13 @@ export namespace RoomServices {
         const r = getRoomByID(room.id);
         if (!r) {
             const result = await getRoomLink(room.id);
+            const jklmRoom = await JklmService.getRoomFromJKLM(room.id);
             if (result.url) {
+                if (jklmRoom) {
+                    room.name = jklmRoom.name;
+                    room.nbPlayers = jklmRoom.playerCount;
+                    room.type = jklmRoom.gameId;
+                }
                 room.link = result.url;
                 room.isActive = false;
                 room.bots = [];
@@ -215,6 +222,26 @@ export namespace RoomServices {
                 }
             }
         }
+        return true;
+    }
+
+    /**
+     * Delete a specific bot
+     * @param roomCode The code for the room where the bot is located
+     * @param botToken The token assigned to the bot being updated
+     * @returns True if the bot was successfully deleted, otherwise false 
+     */
+    export const deleteBot = (roomCode: string, botToken: string): boolean => {
+        const room = getRoomByID(roomCode);
+        if (!room) {
+            return false;
+        }
+        const bot = getBot(room, botToken);
+        if (!bot) {
+            return false;
+        }
+        bot.disconnect();
+        room.bots = room.bots.filter((bot: Bot) => bot.token != botToken);
         return true;
     }
 }
