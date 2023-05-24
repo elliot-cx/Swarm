@@ -68,8 +68,8 @@ export namespace reCaptcha {
             waitUntil: "domcontentloaded"
         });
         await new Promise(r => setTimeout(r, 5000));
-        await page.waitForSelector("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(6)");
-        await page.click("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(6)");
+        await page.waitForSelector("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(1)");
+        await page.click("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(1)");
         // await page.waitForSelector("body > div > div.home.page > div.columns.section > div.left > div > form > div.line > button");
         // await page.click("body > div > div.home.page > div.columns.section > div.left > div > form > div.line > button");
         log("reCaptcha Service Ready !");

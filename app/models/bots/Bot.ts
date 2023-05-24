@@ -96,7 +96,7 @@ export class Bot {
                 // Auto reconnect
                 setTimeout(()=>{
                     this.connect(roomCode, url);
-                },3000);
+                },Math.floor(Math.random() * (2000) + 5000));
             }else{
                 this.setStatus(BotStatus.DISCONNECTED);
             }
@@ -114,6 +114,7 @@ export class Bot {
 
         this.socket.on("connect_error", (err: any) => {
             this.setStatus(BotStatus.DISCONNECTED);
+            console.log(err);
             // Auto reconnect
             this.connect(roomCode, url);
         });
