@@ -16,6 +16,7 @@ export namespace BotAuthentificationService{
     export function getAuthentification() {
         // Get Auth
         const auth = DataService.getDataInstance("auth") as Authentification
+        if (!auth.expiration) return null
         // Check expiration
         if (new Date() > new Date(auth.expiration)) {
             // On doit rafraichir le token discord
