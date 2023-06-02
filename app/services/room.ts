@@ -28,11 +28,11 @@ async function getRoomLink(roomCode: string): Promise<{ url?: string }> {
 /**
  * Returns the bot with the given token from a room
  * @param room A Swarm room instance
- * @param botToken The token assigned to the bot
+ * @param botid The id assigned to the bot
  * @returns The bot if found, otherwise undefined
  */
-function getBot(room: Room, botToken: string): Bot | undefined {
-    return room.bots.find(b => b.token == botToken);
+function getBot(room: Room, botid: string): Bot | undefined {
+    return room.bots.find(b => b.id == botid);
 }
 
 /**
@@ -151,16 +151,16 @@ export namespace RoomServices {
     /**
      * Manages a bot's status to a room
      * @param roomCode The code for the room where the bot is located
-     * @param botToken The token assigned to the bot being managed
+     * @param botid The token assigned to the bot being managed
      * @param action The action to perform on the bot (connect, disconnect, start, stop)
      * @returns True if the bot was successfully managed, otherwise false
      */
-    export const manageBot = (roomCode: string, botToken: string, action: BotAction): boolean => {
+    export const manageBot = (roomCode: string, botid: string, action: BotAction): boolean => {
         const room = getRoomByID(roomCode);
         if (!room) {
             return false;
         }
-        const bot = getBot(room, botToken);
+        const bot = getBot(room, botid);
         if (!bot) {
             return false;
         }
@@ -194,30 +194,30 @@ export namespace RoomServices {
         if (!room) {
             return false;
         }
-        room.bots.map((bot: Bot) => manageBot(roomCode, bot.token, action));
+        room.bots.map((bot: Bot) => manageBot(roomCode, bot.id, action));
         return true;
     }
 
     /**
      * Updates the properties of a bot
      * @param roomCode The code for the room where the bot is located
-     * @param botToken The token assigned to the bot being updated
+     * @param botid The id assigned to the bot being updated
      * @param props The properties that will be changed
      * @returns True if the bot was successfully updated, otherwise false 
      */
-    export const updateBot = (roomCode: string, botToken: string, props: any): boolean => {
+    export const updateBot = (roomCode: string, botid: string, props: any): boolean => {
         const room = getRoomByID(roomCode);
         if (!room) {
             return false;
         }
-        const bot = getBot(room, botToken);
+        const bot = getBot(room, botid);
         if (!bot) {
             return false;
         }
         // Loop properties and change if available
         for (const key in props) {
             if (Object.prototype.hasOwnProperty.call(props, key)) {
-                if (!["socket", "token", "auth", "status"].includes(key)) {
+                if (!["id","socket", "token", "auth", "status"].includes(key)) {
                     bot[key] = props[key];
                 }
             }
@@ -228,20 +228,20 @@ export namespace RoomServices {
     /**
      * Delete a specific bot
      * @param roomCode The code for the room where the bot is located
-     * @param botToken The token assigned to the bot being updated
+     * @param botid The id assigned to the bot being updated
      * @returns True if the bot was successfully deleted, otherwise false 
      */
-    export const deleteBot = (roomCode: string, botToken: string): boolean => {
+    export const deleteBot = (roomCode: string, botid: string): boolean => {
         const room = getRoomByID(roomCode);
         if (!room) {
             return false;
         }
-        const bot = getBot(room, botToken);
+        const bot = getBot(room, botid);
         if (!bot) {
             return false;
         }
         bot.disconnect();
-        room.bots = room.bots.filter((bot: Bot) => bot.token != botToken);
+        room.bots = room.bots.filter((bot: Bot) => bot.id != botid);
         return true;
     }
 }

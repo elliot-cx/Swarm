@@ -2,7 +2,8 @@ import { BotAuthentificationService } from "../../services/botAuthentification";
 import { reCaptcha } from "../../services/reCaptcha";
 import { SocketIOService } from "../../services/sockets";
 import { Utils } from "../../utils/utils";
-import { Authentification } from "../authentification"
+import { Authentification } from "../authentification";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 export enum BotStatus {
     CONNECTING = "connecting",
@@ -28,7 +29,7 @@ export enum BotType {
 }
 
 export class Bot {
-
+    id: string;
     socket: any;
     name: string;
     status: BotStatus;
@@ -41,6 +42,7 @@ export class Bot {
     protected roomCode: string = "";
 
     constructor(name: string) {
+        this.id = Utils.randomString();
         this.socket = require('socket.io-client');
         this.token = Utils.randomString();
         this.auth = BotAuthentificationService.getAuthentification();
@@ -70,8 +72,11 @@ export class Bot {
 
     connect(roomCode: string, url: string) {
         this.roomCode = roomCode;
+        this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
-        this.socket = this.socket.connect(url);
+        const proxyUrl = 'http://swarm_client:Test123@pr.oxylabs.io:7777';
+        const agent = new HttpsProxyAgent(proxyUrl);
+        this.socket = this.socket.connect(url,{agent: agent});
 
         this.socket.on("connect", async () => {
             const gcToken = await reCaptcha.resolveCaptcha();
@@ -96,7 +101,7 @@ export class Bot {
                 // Auto reconnect
                 setTimeout(()=>{
                     this.connect(roomCode, url);
-                },Math.floor(Math.random() * (2000) + 5000));
+                },10000);
             }else{
                 this.setStatus(BotStatus.DISCONNECTED);
             }
@@ -105,6 +110,8 @@ export class Bot {
         // Bot get ban (mostly)
         // TODO: Handle kick reasons
         this.socket.on("kicked", (reason: any) => {
+            console.log(reason);
+            
             if (this.status == BotStatus.ACTIVE) {
                 this.stop();
             }
