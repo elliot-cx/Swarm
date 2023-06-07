@@ -4,6 +4,7 @@ import { SocketIOService } from "../../services/sockets";
 import { Utils } from "../../utils/utils";
 import { Authentification } from "../authentification";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import chalk from 'chalk';
 
 export enum BotStatus {
     CONNECTING = "connecting",
@@ -25,7 +26,12 @@ export enum BotType {
     SPAM = "spam",
     RESPONDER = "responder",
     TRACKER = "tracker",
-    VIDEO = "video"
+    VIDEO = "video",
+    COMMAND = "command"
+}
+
+export function log(string: string) {
+    console.log(chalk.red("[Bot]"), string);
 }
 
 export class Bot {
@@ -71,13 +77,20 @@ export class Bot {
     }
 
     connect(roomCode: string, url: string) {
+        // Check if bot is active before connect
+        if (this.status == (BotStatus.CONNECTED || BotStatus.ACTIVE)) return;
+
         this.roomCode = roomCode;
         this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
+        // TODO : Add proxy handler
         const proxyUrl = 'http://swarm_client:Test123@pr.oxylabs.io:7777';
         const agent = new HttpsProxyAgent(proxyUrl);
-        this.socket = this.socket.connect(url,{agent: agent});
-
+        this.socket = this.socket.connect(url,{
+            agent: agent,
+            transports: ["websocket"]
+        });
+        // Handle sockets events
         this.socket.on("connect", async () => {
             const gcToken = await reCaptcha.resolveCaptcha();
             const joinData = {
@@ -93,35 +106,34 @@ export class Bot {
                 this.setStatus(BotStatus.CONNECTED, data);
             });
         });
-
-        this.socket.on("disconnect", () => {
+        // Bot got disconnected
+        this.socket.on("disconnect", (reason: string) => {
             this.socket.removeAllListeners();
-            // Check if first connection got refused
+            // Check if connection got refused or got disconnected
+            log(reason);
             if (this.status == BotStatus.CONNECTING) {
-                // Auto reconnect
-                setTimeout(()=>{
-                    this.connect(roomCode, url);
-                },10000);
+                if (reason != "io client disconnect") {
+                    setTimeout(()=>this.connect(roomCode, url),3000);
+                }
             }else{
                 this.setStatus(BotStatus.DISCONNECTED);
             }
         });
-
-        // Bot get ban (mostly)
-        // TODO: Handle kick reasons
+        // JKLM custom events (ban for exemple)
         this.socket.on("kicked", (reason: any) => {
-            console.log(reason);
-            
-            if (this.status == BotStatus.ACTIVE) {
-                this.stop();
-            }
+            if (this.status == BotStatus.ACTIVE) this.stop();
             this.socket.close();
-            this.setStatus(BotStatus.BANNED);
+            if (reason == "banned") {
+                this.setStatus(BotStatus.BANNED);
+                // Auto reconnect the bot when got ban (only works if proxy is active)
+                // TODO Check if proxy enabled
+                this.connect(this.roomCode,url);
+            }
         });
 
         this.socket.on("connect_error", (err: any) => {
             this.setStatus(BotStatus.DISCONNECTED);
-            console.log(err);
+            log(`The bot ${this.id}|${this.name} failed to connect because of : ${err}`);
             // Auto reconnect
             this.connect(roomCode, url);
         });
@@ -133,7 +145,15 @@ export class Bot {
         } catch (error) { }
     }
 
-    start() { this.setStatus(BotStatus.ACTIVE); }
+    start() { 
+        if (this.status == (BotStatus.CONNECTED || BotStatus.STOPPED) ) {
+            this.setStatus(BotStatus.ACTIVE); 
+        }
+    }
 
-    stop() { this.setStatus(BotStatus.STOPPED); }
+    stop() { 
+        if (this.status == BotStatus.ACTIVE) {
+            this.setStatus(BotStatus.STOPPED);
+        }
+     }
 }

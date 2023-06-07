@@ -5,6 +5,7 @@ import TrackerBot from "../models/bots/TrackerBot";
 import { Room } from "../models/room";
 import fetch from "node-fetch";
 import { JklmService } from "./jklm";
+import CommandBot from "../models/bots/CommandBot";
 
 // Liste des rooms instanciées
 var rooms: Room[] = [];
@@ -104,7 +105,7 @@ export namespace RoomServices {
      * Adds a bot to a room
      * @param roomCode The code for the room where the bot will be added
      * @param bot The bot to be added
-     * @returns The token for the added bot, if successful, otherwise false
+     * @returns The id for the added bot, if successful, otherwise false
      */
     export const addBot = (roomCode: string, bot: any): string | false => {
         const room = getRoomByID(roomCode);
@@ -113,15 +114,20 @@ export namespace RoomServices {
                 case BotType.SPAM:
                     const spamBot = new SpamBot(bot.name, bot.message);
                     room.bots.push(spamBot);
-                    return spamBot.token;
+                    return spamBot.id;
                 case BotType.RESPONDER:
-                    const responderBot = new ResponderBot(bot.name,bot.delay);
+                    const responderBot = new ResponderBot(bot.name, bot.delay);
                     room.bots.push(responderBot);
-                    return responderBot.token;
+                    return responderBot.id;
                 case BotType.TRACKER:
-                    const trackerBot = new TrackerBot(bot.name,bot.nickname,bot.targetAuth);
+                    const trackerBot = new TrackerBot(bot.name, bot.nickname, bot.targetAuth);
                     room.bots.push(trackerBot);
-                    return trackerBot.token;
+                    return trackerBot.id;
+                case BotType.COMMAND:
+                    const commandBot = new CommandBot(bot.name);
+                    room.bots.push(commandBot);
+                    return commandBot.id;
+
                 default:
                     return false;
             }
@@ -134,13 +140,13 @@ export namespace RoomServices {
      * @param roomCode The code for the room where the bot will be added
      * @param bot The bot to be added
      * @param number The number of bot to be added
-     * @returns The token for the added bot, if successful, otherwise false
+     * @returns The id for the added bot, if successful, otherwise false
      */
     export const addBots = (roomCode: string, bot: any, number: number): boolean => {
         const room = getRoomByID(roomCode);
         if (room && room.bots.length <= 16 - number) {
             for (let index = 0; index < number; index++) {
-                if (!addBot(roomCode,bot)){
+                if (!addBot(roomCode, bot)) {
                     return false;
                 }
             }
@@ -217,7 +223,7 @@ export namespace RoomServices {
         // Loop properties and change if available
         for (const key in props) {
             if (Object.prototype.hasOwnProperty.call(props, key)) {
-                if (!["id","socket", "token", "auth", "status"].includes(key)) {
+                if (!["id", "socket", "token", "auth", "status"].includes(key)) {
                     bot[key] = props[key];
                 }
             }
