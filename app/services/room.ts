@@ -6,6 +6,7 @@ import { Room } from "../models/room";
 import fetch from "node-fetch";
 import { JklmService } from "./jklm";
 import CommandBot from "../models/bots/CommandBot";
+import OsintBot from "../models/bots/OsintBot";
 
 // Liste des rooms instanciées
 var rooms: Room[] = [];
@@ -127,7 +128,10 @@ export namespace RoomServices {
                     const commandBot = new CommandBot(bot.name);
                     room.bots.push(commandBot);
                     return commandBot.id;
-
+                case BotType.OSINT:
+                    const osintBot = new OsintBot(bot.name, bot.peerId);
+                    room.bots.push(osintBot);
+                    return osintBot.id;
                 default:
                     return false;
             }

@@ -89,25 +89,3 @@ export namespace reCaptcha {
         return token;
     }
 }
-
-
-// log("Loading JKLM.FUN...",);
-// page = await browser.newPage();
-// await page.goto("https://jklm.fun/",{
-//     waitUntil: "domcontentloaded"
-// });
-// const token = await page.evaluate(`
-// settings.nickname = "Swarm";
-// saveSettings();
-// return userToken;
-// `);
-// const res = await fetch("https://jklm.fun/api/startRoom",{
-//     method: 'POST', 
-//     body: JSON.stringify({
-//         name: "Chez Swarm",
-//         isPublic: false,
-//         gameId: "bombparty",
-//         creatorUserToken: token
-//     })
-// }).then((res)=>res.json());
-// console.log(res);

@@ -27,7 +27,8 @@ export enum BotType {
     RESPONDER = "responder",
     TRACKER = "tracker",
     VIDEO = "video",
-    COMMAND = "command"
+    COMMAND = "command",
+    OSINT = "osint"
 }
 
 export function log(string: string) {
@@ -110,17 +111,16 @@ export class Bot {
         this.socket.on("disconnect", (reason: string) => {
             this.socket.removeAllListeners();
             // Check if connection got refused or got disconnected
-            log(reason);
-            if (this.status == BotStatus.CONNECTING) {
-                if (reason != "io client disconnect") {
-                    setTimeout(()=>this.connect(roomCode, url),3000);
-                }
-            }else{
-                this.setStatus(BotStatus.DISCONNECTED);
+            if (reason != "io client disconnect") {
+                setTimeout(()=>this.connect(roomCode, url),10000);
+            }
+            if (this.status != BotStatus.CONNECTING) {
+               this.setStatus(BotStatus.DISCONNECTED);
             }
         });
         // JKLM custom events (ban for exemple)
         this.socket.on("kicked", (reason: any) => {
+            log("kicked : " + reason);
             if (this.status == BotStatus.ACTIVE) this.stop();
             this.socket.close();
             if (reason == "banned") {
@@ -133,7 +133,7 @@ export class Bot {
 
         this.socket.on("connect_error", (err: any) => {
             this.setStatus(BotStatus.DISCONNECTED);
-            log(`The bot ${this.id}|${this.name} failed to connect because of : ${err}`);
+            log(`The bot [${this.id}] | ${this.name} failed to connect : ${err}`);
             // Auto reconnect
             this.connect(roomCode, url);
         });
