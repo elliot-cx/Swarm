@@ -110,7 +110,7 @@ export namespace RoomServices {
      */
     export const addBot = (roomCode: string, bot: any): string | false => {
         const room = getRoomByID(roomCode);
-        if (room && room.bots.length < 16) {
+        if (room && room.bots.length < 150) {
             switch (bot.type) {
                 case BotType.SPAM:
                     const spamBot = new SpamBot(bot.name, bot.message);

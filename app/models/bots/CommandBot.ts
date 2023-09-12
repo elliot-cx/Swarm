@@ -55,9 +55,9 @@ export default class CommandBot extends Bot {
 
     handleCommand(authProfile: chatterProfile, message: string): void {
         // Check command
-        if (message.startsWith("/")) {
+        if (message.startsWith("/") && authProfile.peerId != this.peerId) {
             // Check auteur + perm
-            if ((authProfile.peerId == this.peerId) || authProfile.roles.length == 0) {
+            if (authProfile.roles.length == 0) {
                 this.emit("chat", "T pas mod sale fdp");
                 return;
             }
