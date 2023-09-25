@@ -4,8 +4,10 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha';
 import chalk from 'chalk';
 import { Page } from 'puppeteer';
+import { createCursor, installMouseHelper } from "ghost-cursor"
 import fetch from 'node-fetch';
 import { Utils } from '../utils/utils';
+import { CHAT, GAME_FRAME, JOIN_BUTTON, ROOM } from '../constants/selectors';
 
 function log(string: string) {
     console.log(chalk.blue("[reCaptcha]"), string);
@@ -24,9 +26,9 @@ export namespace reCaptcha {
     export async function initCaptchaSolver() {
         puppeteer.use(StealthPlugin());
         puppeteer.use(RecaptchaPlugin())
-        browser = await puppeteer.launch({ 
-            executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", 
-            headless: false,
+        browser = await puppeteer.launch({
+            executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            headless: true,
             args: [
                 `--window-size=${Math.floor(Math.random() * (2000 - 800 + 1) + 800)},${Math.floor(Math.random() * (1200 - 600 + 1) + 600)}`,
                 '--disable-blink-features=AutomationControlled',
@@ -59,20 +61,28 @@ export namespace reCaptcha {
                 `--disable-offer-store-unmasked-wallet-cards`,
                 `--disable-offer-upload-credit-cards`,
                 `--disable-features=AutofillEnableAccountWalletStorage`
-              ] 
+            ]
         });
         log("Init completed");
         log("Loading JKLM.FUN...",);
         page = await browser.newPage();
-        await page.goto("https://jklm.fun/",{
-            waitUntil: "domcontentloaded"
-        });
+        await installMouseHelper(page);
+        const cursor = createCursor(page);
+        await page.goto("https://jklm.fun/", { waitUntil: "domcontentloaded" });
         await new Promise(r => setTimeout(r, 5000));
-        await page.waitForSelector("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(2)");
-        await page.click("body > div > div.home.page > div.publicRooms.section > div.listContainer > div.list > a:nth-child(2)");
-        // await page.waitForSelector("body > div > div.home.page > div.columns.section > div.left > div > form > div.line > button");
-        // await page.click("body > div > div.home.page > div.columns.section > div.left > div > form > div.line > button");
+        await page.waitForSelector(ROOM);
+        await cursor.click(ROOM);
+        await page.waitForSelector(JOIN_BUTTON);
+        await cursor.click(JOIN_BUTTON);
+        await page.screenshot({ path: 'test.png' });
         log("reCaptcha Service Ready !");
+
+        setInterval(()=>{
+            cursor.moveTo({
+                x: Math.random() * 1000 + 200,
+                y: Math.random() * 1000 + 200,
+            });
+        },Math.floor(Math.random() * (5000) + 800));
     }
 
     export async function resolveCaptcha() {

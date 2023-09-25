@@ -85,7 +85,7 @@ export class Bot {
         this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
         // TODO : Add proxy handler
-        const proxyUrl = 'http://swarm_client:Test123@pr.oxylabs.io:7777';
+        const proxyUrl = 'http://swarm_client:FYygdfuRGYDB123@pr.oxylabs.io:7777';
         const agent = new HttpsProxyAgent(proxyUrl);
         this.socket = this.socket.connect(url,{
             agent: agent,
