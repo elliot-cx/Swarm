@@ -74,7 +74,7 @@ export namespace reCaptcha {
         await cursor.click(ROOM);
         await page.waitForSelector(JOIN_BUTTON);
         await cursor.click(JOIN_BUTTON);
-        await page.screenshot({ path: 'test.png' });
+        // await page.screenshot({ path: 'test.png' });
         log("reCaptcha Service Ready !");
 
         setInterval(()=>{

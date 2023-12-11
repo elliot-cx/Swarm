@@ -109,6 +109,32 @@ export default class CommandBot extends Bot {
                         this.emit("chat", `Ya pas de ptites putes actuellements`);
                     }
                 });
+            } else if (message.startsWith("/banall")) {
+                this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
+                    const bannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.length == 0);
+                    if (bannable.length > 0) {
+                        bannable.forEach(banned => {
+                            this.emit("setUserBanned", banned.peerId, true);
+                        })
+                        this.emit("chat", `HAHAHAHAHAH j'ai ban toute la game t'es le dieu mtn`);
+                    }
+                    else {
+                        this.emit("chat", `Ya pas de ptites soumises à ban`);
+                    }
+                });
+            } else if (message.startsWith("/debanall")) {
+                this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
+                    const unbannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.includes("banned"));
+                    if (unbannable.length > 0) {
+                        unbannable.forEach(banned => {
+                            this.emit("setUserBanned", banned.peerId, false);
+                        })
+                        this.emit("chat", `c'est bon j'ai débanni toutes les salopes qui étaient ban`);
+                    }
+                    else {
+                        this.emit("chat", `Ya pas de ptites soumises à ban`);
+                    }
+                });
             } else {
                 this.emit("chat", "Je connais pas cette commande frérot");
             }

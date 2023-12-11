@@ -84,8 +84,8 @@ export class Bot {
         this.roomCode = roomCode;
         this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
-        // TODO : Add proxy handler
-        const proxyUrl = 'http://swarm_client:FYygdfuRGYDB123@pr.oxylabs.io:7777';
+        // Here you can configure a proxy for ban avoiding (use a rotating proxy / residential for better results)
+        const proxyUrl = 'http://swarm_client:password@pr.oxylabs.io:7777';
         const agent = new HttpsProxyAgent(proxyUrl);
         this.socket = this.socket.connect(url,{
             agent: agent,
