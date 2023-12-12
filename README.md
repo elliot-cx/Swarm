@@ -2,22 +2,22 @@
     <img src="./assets/hornet.svg" height="200px">
     <h1 align="center">Swarm</h1>
 </p>
-
 <p align="center">
-    <a href="">
+    <a href="https://expressjs.com/">
         <img src="https://img.shields.io/badge/Express%20js-000000?style=for-the-badge&logo=express&logoColor=white">
     </a>
-    <a href="">
+    <a href="https://nodejs.org/en">
         <img src="https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white">
     </a>
-    <a href="">
+    <a href="https://socket.io/">
         <img src="https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white">
     </a>
-    <a href="">
+    <a href="https://legacy.reactjs.org">
         <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
     </a>
 </p>
-**Swarm** est une application développée en **[TypeScript](https://www.typescriptlang.org/)** qui facilite l'instanciation et la gestion de bots sur la plateforme **[JKLM.FUN](jklm.fun)**. Avec une interface graphique en **[React](https://legacy.reactjs.org/)** et une API robuste, **Swarm** offre la possibilité aux développeurs de créer et de contrôler facilement leurs propres bots.
+
+**Swarm** est une application développée en [TypeScript](https://www.typescriptlang.org/) qui facilite l'instanciation et la gestion de bots sur la plateforme [JKLM.FUN](jklm.fun). Avec une interface graphique en [React](https://legacy.reactjs.org/) et une API robuste, **Swarm** offre la possibilité aux développeurs de créer et de contrôler facilement leurs propres bots.
 
 ## 🎯 Features
 
