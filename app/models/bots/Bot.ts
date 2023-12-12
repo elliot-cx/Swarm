@@ -77,7 +77,7 @@ export class Bot {
         }
     }
 
-    connect(roomCode: string, url: string) {
+    connect(roomCode: string, url: string, autoStart: boolean = false) {
         // Check if bot is active before connect
         if (this.status == (BotStatus.CONNECTED || BotStatus.ACTIVE)) return;
 
@@ -85,7 +85,7 @@ export class Bot {
         this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
         // Here you can configure a proxy for ban avoiding (use a rotating proxy / residential for better results)
-        const proxyUrl = 'http://swarm_client:password@pr.oxylabs.io:7777';
+        const proxyUrl = 'http://swarm_client:gd46iM5dduuTEW@pr.oxylabs.io:7777';
         const agent = new HttpsProxyAgent(proxyUrl);
         this.socket = this.socket.connect(url,{
             agent: agent,
@@ -105,6 +105,9 @@ export class Bot {
             this.socket.emit("joinRoom", joinData, (data: any) => {
                 this.peerId = data.selfPeerId; // To know the bot connexion id from JKLM server
                 this.setStatus(BotStatus.CONNECTED, data);
+                if (autoStart) {
+                    this.start();
+                }
             });
         });
         // Bot got disconnected
@@ -121,16 +124,21 @@ export class Bot {
         // JKLM custom events (ban for exemple)
         this.socket.on("kicked", (reason: any) => {
             log("kicked : " + reason);
-            if (this.status == BotStatus.ACTIVE) this.stop();
+            const wasActive = this.status == BotStatus.ACTIVE;
+            // First we stop the bot loop
+            if (wasActive) this.stop();
+            // We close the socket
             this.socket.close();
+            // Check if it was a ban
             if (reason == "banned") {
                 this.setStatus(BotStatus.BANNED);
                 // Auto reconnect the bot when got ban (only works if proxy is active)
-                // TODO Check if proxy enabled
-                this.connect(this.roomCode,url);
+                // TODO: Check if proxy enabled
+                this.connect(this.roomCode,url, wasActive);
             }
+            // TODO: Handle other type of kicked
         });
-
+        // Log connect error in case for debug
         this.socket.on("connect_error", (err: any) => {
             this.setStatus(BotStatus.DISCONNECTED);
             log(`The bot [${this.id}] | ${this.name} failed to connect : ${err}`);
