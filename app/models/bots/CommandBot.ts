@@ -1,5 +1,5 @@
 import { chatterProfile } from "../chatterProfile";
-import { Bot, BotStatus, BotType, log } from "./Bot";
+import { Bot, BotStatus, BotType } from "./Bot";
 
 export default class CommandBot extends Bot {
 
@@ -82,7 +82,7 @@ export default class CommandBot extends Bot {
                     return;
                 }
                 this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
-                    const user: chatterProfile | undefined = chatterProfiles.find((chatter: chatterProfile) => chatter.nickname == args[1]);
+                    const user: chatterProfile | undefined = chatterProfiles.find((chatter: chatterProfile) => chatter.nickname == args.slice(1).join(" ")|| chatter.peerId === parseInt(args[1]));
                     if (user) {
                         if (user.roles.length > 0) {
                             this.emit(`chat","désolé je peux pas mettre en prison ${user.nickname}`);
@@ -111,10 +111,10 @@ export default class CommandBot extends Bot {
                 });
             } else if (message.startsWith("/banall")) {
                 this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
-                    const bannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.length == 0);
+                    const bannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.length === 0 && chatter.peerId !== this.peerId);
                     if (bannable.length > 0) {
                         bannable.forEach(banned => {
-                            this.emit("setUserBanned", banned.peerId, true);
+                            this.emit("setUserBanned", banned.peerId, true, (res: any) => { });
                         })
                         this.emit("chat", `HAHAHAHAHAH j'ai ban toute la game t'es le dieu mtn`);
                     }
@@ -127,7 +127,7 @@ export default class CommandBot extends Bot {
                     const unbannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.includes("banned"));
                     if (unbannable.length > 0) {
                         unbannable.forEach(banned => {
-                            this.emit("setUserBanned", banned.peerId, false);
+                            this.emit("setUserBanned", banned.peerId, false, (res: any) => {});
                         })
                         this.emit("chat", `c'est bon j'ai débanni toutes les salopes qui étaient ban`);
                     }
