@@ -85,8 +85,8 @@ export class Bot {
         this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
         // Here you can configure a proxy for ban avoiding (use a rotating proxy / residential for better results)
-        const proxyUrl = 'http://user:password.oxylabs.io:7777';
-        const agent = new HttpsProxyAgent(proxyUrl);
+        const proxyUrl = process.env.PROXY;
+        const agent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : null;
         this.socket = this.socket.connect(url,{
             agent: agent,
             transports: ["websocket"]
