@@ -87,15 +87,20 @@ export namespace reCaptcha {
 
     export async function resolveCaptcha() {
         // await page.waitForFunction()
-        const token = await page.evaluate(`
-        new Promise((resolve) => {
-            // This code will be executed within the page context
-            grecaptcha.ready(() => {
-                grecaptcha.execute('6LdzYGslAAAAACxOZaQA5J0CxlfdJQUdWvJYoAFM', { action: 'joinRoom' }).then((token) => {
-                    resolve(token);
+        try {
+            const token = await page.evaluate(`
+            new Promise((resolve) => {
+                // This code will be executed within the page context
+                grecaptcha.ready(() => {
+                    grecaptcha.execute('6LdzYGslAAAAACxOZaQA5J0CxlfdJQUdWvJYoAFM', { action: 'joinRoom' }).then((token) => {
+                        resolve(token);
+                    });
                 });
-            });
-        });`);
-        return token;
+            });`);
+            return token;
+        } catch (error) {
+            return null;
+        }
+        
     }
 }
