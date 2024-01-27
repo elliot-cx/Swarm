@@ -32,7 +32,8 @@ export enum BotType {
     TRACKER = "tracker",
     VIDEO = "video",
     COMMAND = "command",
-    OSINT = "osint"
+    OSINT = "osint",
+    POPSAUCE = "popsauce"
 }
 
 export function log(string: string) {

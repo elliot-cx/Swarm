@@ -11,5 +11,5 @@ export interface RoomEntry {
    },
    selfPeerId: number,
    selfRoles: [string],
-   url?: string
+   url: string
 }

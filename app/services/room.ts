@@ -7,6 +7,7 @@ import fetch from "node-fetch";
 import { JklmService } from "./jklm";
 import CommandBot from "../models/bots/CommandBot";
 import OsintBot from "../models/bots/OsintBot";
+import PopSauceBot from "../models/bots/PopSauceBot";
 
 // Liste des rooms instanciées
 var rooms: Room[] = [];
@@ -110,7 +111,7 @@ export namespace RoomServices {
      */
     export const addBot = (roomCode: string, bot: any): string | false => {
         const room = getRoomByID(roomCode);
-        if (room && room.bots.length < 150) {
+        if (room) {
             switch (bot.type) {
                 case BotType.SPAM:
                     const spamBot = new SpamBot(bot.name, bot.message);
@@ -128,6 +129,10 @@ export namespace RoomServices {
                     const commandBot = new CommandBot(bot.name);
                     room.bots.push(commandBot);
                     return commandBot.id;
+                case BotType.POPSAUCE:
+                    const popsauceBot = new PopSauceBot(bot.name);
+                    room.bots.push(popsauceBot);
+                    return popsauceBot.id;
                 case BotType.OSINT:
                     const osintBot = new OsintBot(bot.name, bot.peerId);
                     room.bots.push(osintBot);
@@ -252,6 +257,7 @@ export namespace RoomServices {
         }
         bot.disconnect();
         room.bots = room.bots.filter((bot: Bot) => bot.id != botid);
+        bot.onDelete();
         return true;
     }
 }
