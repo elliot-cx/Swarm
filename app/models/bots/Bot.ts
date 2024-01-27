@@ -165,7 +165,7 @@ export class Bot {
     }
 
     start() { 
-        if (this.status == (BotStatus.CONNECTED || BotStatus.STOPPED) ) {
+        if (this.status == BotStatus.CONNECTED || this.status == BotStatus.STOPPED) {
             this.setStatus(BotStatus.ACTIVE); 
         }
     }
