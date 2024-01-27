@@ -1,13 +1,14 @@
 import { RoomEntry } from "../roomEntry";
 import { PopsauceSetup } from "../gameSetup";
 import { PopsauceStartChallenge, PopsauceEndChallenge } from "../popsauceChallenge";
-import { Bot, BotStatus } from "./Bot";
+import { Bot, BotStatus, BotType } from "./Bot";
 import { Socket, io } from "socket.io-client";
 import { sha256 } from "js-sha256";
 import { DataService } from "../../services/data";
 
 export default class PopSauceBot extends Bot {
 
+   type: BotType;
    socketGame: Socket;
    dictionnaryLang: string;
    hash: string;
@@ -18,6 +19,7 @@ export default class PopSauceBot extends Bot {
       this.dictionnaryLang = "fr";
       this.answers = DataService.getDataInstance("popsauce");
       this.hash = "";
+      this.type = BotType.POPSAUCE;
    }
 
    toJSON() {
@@ -45,7 +47,9 @@ export default class PopSauceBot extends Bot {
          case BotStatus.ACTIVE:
             this.socketGame.emit("joinRound");
             break;
-
+         case BotStatus.STOPPED:
+            this.socketGame.emit("leaveRound");
+            break;
          case BotStatus.DISCONNECTED:
             this.socketGame.disconnect();
             this.socketGame.off("connect");
