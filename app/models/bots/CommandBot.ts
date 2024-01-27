@@ -1,5 +1,6 @@
 import { chatterProfile } from "../chatterProfile";
 import { Bot, BotStatus, BotType } from "./Bot";
+import { readdirSync } from "fs";
 
 export default class CommandBot extends Bot {
 
@@ -19,14 +20,12 @@ export default class CommandBot extends Bot {
         return json;
     }
 
-    // this.emit("chat", message);
-
     onStatusChanged(status: BotStatus, data?: any): void {
         switch (status) {
             case BotStatus.CONNECTED:
                 this.isMod = data.selfRoles.length > 0;
                 if (!this.isMod) {
-                    this.emit("chat", "Mets moi mod chacal stp");
+                    this.emit("chat", "Mets moi modo chacal stp");
                 }
                 // Check si il passe mod
                 this.socket.on("setSelfRoles", (roles: string[]) => {
@@ -54,106 +53,32 @@ export default class CommandBot extends Bot {
     }
 
     handleCommand(authProfile: chatterProfile, message: string): void {
-        // Check command
-        if (message.startsWith("/") && authProfile.peerId != this.peerId) {
-            // Check auteur + perm
-            if (authProfile.roles.length == 0) {
-                this.emit("chat", "T pas mod sale fdp");
-                return;
-            }
-            const args = message.split(" ");
-            // Liste des commandes
-            if (message.startsWith("/roulette")) {
-                this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
-                    const bannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.length == 0);
-                    if (bannable.length > 0) {
-                        const banned = bannable[Math.floor(Math.random() * bannable.length)];
-                        // Ban
-                        this.emit("setUserBanned", banned.peerId, true, (res: any) => { });
-                        this.emit("chat", `mskn ${banned.nickname} s'est fait ban comme une salope`);
-                    } else {
-                        this.emit("chat", `Ya pas de ptites soumises à ban`);
-                    }
-                });
-            } else if (message.startsWith("/prison")) {
-                if (args.length < 2) {
-                    // Pas le bon nombre d'arguments
-                    this.emit(`chat","ta oublié de me donner le blaze au lépreux que je dois mettre en prison`);
-                    return;
-                }
-                this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
-                    const user: chatterProfile | undefined = chatterProfiles.find((chatter: chatterProfile) => chatter.nickname == args.slice(1).join(" ")|| chatter.peerId === parseInt(args[1]));
-                    if (user) {
-                        if (user.roles.length > 0) {
-                            this.emit(`chat","désolé je peux pas mettre en prison ${user.nickname}`);
-                        } else {
-                            if (this.jail.includes(user.nickname)) {
-                                this.jail = this.jail.filter((nickname: string) => nickname != user.nickname);
-                                this.emit("chat", `C'est bon j'ai libéré cette salope de ${user.nickname}`);
-                            } else {
-                                this.jail.push(user.nickname);
-                                this.emit("chat", `J'ai mis cette sous race de ${user.nickname} en prison, il parle, il va se faire prendre par le cul ce pd`);
-                            }
-                        }
-                    } else {
-                        this.emit("chat", "tu te fou de ma geule là ? je connais pas ce petit pd moi");
-                    }
-                });
-            } else if (message.startsWith("/pute")) {
-                this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
-                    const bannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.length == 0);
-                    if (bannable.length > 0) {
-                        const chatter = bannable[Math.floor(Math.random() * bannable.length)];
-                        this.emit("chat", `On m'annonce que ${chatter.nickname} est une grosse pute`);
-                    } else {
-                        this.emit("chat", `Ya pas de ptites putes actuellements`);
-                    }
-                });
-            } else if (message.startsWith("/banall")) {
-                this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
-                    const bannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.length === 0 && chatter.peerId !== this.peerId);
-                    if (bannable.length > 0) {
-                        bannable.forEach(banned => {
-                            this.emit("setUserBanned", banned.peerId, true, (res: any) => { });
-                        })
-                        this.emit("chat", `HAHAHAHAHAH j'ai ban toute la game t'es le dieu mtn`);
-                    }
-                    else {
-                        this.emit("chat", `Ya pas de ptites soumises à ban`);
-                    }
-                });
-            } else if (message.startsWith("/debanall")) {
-                this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
-                    const unbannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.includes("banned"));
-                    if (unbannable.length > 0) {
-                        unbannable.forEach(banned => {
-                            this.emit("setUserBanned", banned.peerId, false, (res: any) => {});
-                        })
-                        this.emit("chat", `c'est bon j'ai débanni toutes les salopes qui étaient ban`);
-                    }
-                    else {
-                        this.emit("chat", `Ya pas de ptites soumises à ban`);
-                    }
-                });
-            } else {
-                this.emit("chat", "Je connais pas cette commande frérot");
-            }
-        }
-    }
+        this.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
+            if(message.startsWith("/") && authProfile.peerId !== this.peerId) {
+                if(authProfile.roles.length === 0 && authProfile.nickname !== "MBAPPE" && authProfile.nickname !== "BERNARDO GUY") return this.emit("chat", "T'es pas mod sale fdp");
+                const args = message.split(" ");
+                const command = args.shift()?.replace("/", "");
+                const commands = readdirSync("./app/models/bots/commands/");
+                if(!commands.includes(command as string + ".ts")) return this.emit("chat", `Je connais pas cette commande frérot`);
+                const file = require(`./commands/${command}`).default;
+                if(file.needMod && (chatterProfiles.find(c => c.peerId === this.peerId) as chatterProfile).roles.length < 1) return this.emit("chat", "Faut que je sois mod imbécile va");
+                file.run(this, authProfile, args);
+            };
+        });
+    };
 
     handleJail(authProfile: chatterProfile, message: string): void {
         if (this.jail.includes(authProfile.nickname)) {
             if (!this.isMod) {
-                this.emit("chat", "je suis plus modo enculé, je peux pas le foutre en prison ce pd");
+                this.emit("chat", "Je suis plus modo enculé, je peux pas le foutre en prison ce pd");
                 return;
             }
             if (authProfile.roles.length == 0) {
-                this.emit("chat", "je t'avais prévenu petite salope");
+                this.emit("chat", "Je t'avais prévenu petite salope");
                 this.emit("setUserBanned", authProfile.peerId, true, (res: any) => {
                     this.emit("setUserBanned", authProfile.peerId, false, (res: any) => { });
                 });
-            }
-
-        }
-    }
+            };
+        };
+    };
 }
