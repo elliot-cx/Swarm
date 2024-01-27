@@ -27,8 +27,8 @@ export namespace reCaptcha {
         puppeteer.use(StealthPlugin());
         puppeteer.use(RecaptchaPlugin())
         browser = await puppeteer.launch({
-            executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-            headless: true,
+            executablePath: "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+            headless: "new",
             args: [
                 `--window-size=${Math.floor(Math.random() * (2000 - 800 + 1) + 800)},${Math.floor(Math.random() * (1200 - 600 + 1) + 600)}`,
                 '--disable-blink-features=AutomationControlled',

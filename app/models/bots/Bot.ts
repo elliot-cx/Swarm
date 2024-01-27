@@ -5,6 +5,8 @@ import { Utils } from "../../utils/utils";
 import { Authentification } from "../authentification";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import chalk from 'chalk';
+import { RoomEntry } from "../roomEntry";
+import { Socket, io } from "socket.io-client";
 
 export enum BotStatus {
     CONNECTING = "connecting",
@@ -12,14 +14,16 @@ export enum BotStatus {
     BANNED = "banned",
     DISCONNECTED = "disconnected",
     ACTIVE = "active",
-    STOPPED = "stop"
+    STOPPED = "stop",
+    DELETED = "deleted"
 }
 
 export enum BotAction {
     START = "start",
     STOP = "stop",
     DISCONNECT = "disconnect",
-    CONNECT = "connect"
+    CONNECT = "connect",
+    DELETE = "deleted"
 }
 
 export enum BotType {
@@ -37,7 +41,7 @@ export function log(string: string) {
 
 export class Bot {
     id: string;
-    socket: any;
+    socket: Socket;
     name: string;
     status: BotStatus;
     token: string;
@@ -61,7 +65,7 @@ export class Bot {
     // Ici on veut exclure des propriétés qui ne doivent pas être renvoyées par l'API
     toJSON() { }
 
-    onStatusChanged(status: BotStatus, data?: any) { }
+    onStatusChanged(status: BotStatus, data?: RoomEntry) { }
 
     setStatus(status: BotStatus, data?: any) {
         this.status = status;
@@ -86,10 +90,10 @@ export class Bot {
         this.setStatus(BotStatus.CONNECTING);
         // Here you can configure a proxy for ban avoiding (use a rotating proxy / residential for better results)
         const proxyUrl = process.env.PROXY;
-        const agent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : null;
-        this.socket = this.socket.connect(url,{
-            agent: agent,
-            transports: ["websocket"]
+        // const agent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : null;
+        this.socket = io(url, {
+            // agent: agent,
+            transports :  ["websocket"]
         });
         // Handle sockets events
         this.socket.on("connect", async () => {
@@ -98,12 +102,14 @@ export class Bot {
                 "roomCode": roomCode,
                 "userToken": this.token,
                 "nickname": this.name,
+                "picture": null,
                 "auth": BotAuthentificationService.getAuthentification(),
                 "language": "fr-FR",
                 "token": gcToken
             };
-            this.socket.emit("joinRoom", joinData, (data: any) => {
+            this.socket.emit("joinRoom", joinData, (data: RoomEntry) => {
                 this.peerId = data.selfPeerId; // To know the bot connexion id from JKLM server
+                data.url = url;
                 this.setStatus(BotStatus.CONNECTED, data);
                 if (autoStart) {
                     this.start();
@@ -115,7 +121,11 @@ export class Bot {
             this.socket.removeAllListeners();
             // Check if connection got refused or got disconnected
             if (reason != "io client disconnect") {
-                setTimeout(()=>this.connect(roomCode, url),10000);
+                setTimeout(()=>{
+                    if (this.status !== BotStatus.DELETED) {
+                        this.connect(roomCode, url)
+                    }
+                },10000);
             }
             if (this.status != BotStatus.CONNECTING) {
                this.setStatus(BotStatus.DISCONNECTED);
@@ -163,5 +173,9 @@ export class Bot {
         if (this.status == BotStatus.ACTIVE) {
             this.setStatus(BotStatus.STOPPED);
         }
-     }
+    }
+
+    onDelete() {
+        this.status = BotStatus.DELETED;
+    }
 }
