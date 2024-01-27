@@ -46,6 +46,7 @@ export class Bot {
     name: string;
     status: BotStatus;
     token: string;
+    image: string | null;
     auth: Authentification | null;
     peerId: number | undefined;
     // Enable access properties from key like -> Object[propertyName]
@@ -58,7 +59,13 @@ export class Bot {
         this.socket = require('socket.io-client');
         this.token = Utils.randomString();
         this.auth = BotAuthentificationService.getAuthentification();
-        this.name = name;
+        if (name.includes("|")) {
+            this.name = name.split("|")[0];
+            this.image = name.split("|")[1];
+        }else{
+            this.name = name;
+            this.image = null;
+        }
         this.status = BotStatus.DISCONNECTED;
     }
 
@@ -103,7 +110,7 @@ export class Bot {
                 "roomCode": roomCode,
                 "userToken": this.token,
                 "nickname": this.name,
-                "picture": null,
+                "picture": this.image ? await Utils.compressImage(this.image) : null,
                 "auth": BotAuthentificationService.getAuthentification(),
                 "language": "fr-FR",
                 "token": gcToken
