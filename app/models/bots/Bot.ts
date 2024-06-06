@@ -98,9 +98,9 @@ export class Bot {
         this.setStatus(BotStatus.CONNECTING);
         // Here you can configure a proxy for ban avoiding (use a rotating proxy / residential for better results)
         const proxyUrl = process.env.PROXY;
-        // const agent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : null;
+        const agent: any = proxyUrl ? new HttpsProxyAgent(proxyUrl) : null;
         this.socket = io(url, {
-            // agent: agent,
+            agent: agent,
             transports :  ["websocket"]
         });
         // Handle sockets events

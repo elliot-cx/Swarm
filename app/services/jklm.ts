@@ -17,7 +17,7 @@ export namespace JklmService {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
-        const data = await response.json();
+        const data: any = await response.json();
         return data.publicRooms;
     }
 
