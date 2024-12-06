@@ -25,7 +25,7 @@ export default class PopSauceBot extends Bot {
    }
 
    toJSON() {
-      const { socket, socketGame, ...json } = this
+      const { socket, socketGame, timeouts, answers, ...json } = this
       return json
    }
 

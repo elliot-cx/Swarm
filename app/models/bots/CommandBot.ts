@@ -13,7 +13,7 @@ export default class CommandBot extends Bot {
    }
 
    toJSON() {
-      const { socket, jail, ...json } = this
+      const { socket, timeouts, ...json } = this
       return json
    }
 

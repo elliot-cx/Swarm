@@ -14,7 +14,7 @@ export default class SpamBot extends Bot {
    }
 
    toJSON() {
-      const { socket, interval, ...json } = this
+      const { socket, interval, timeouts, ...json } = this
       return json
    }
 

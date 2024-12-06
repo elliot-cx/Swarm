@@ -12,7 +12,7 @@ export default class ResponderBot extends Bot {
    }
 
    toJSON() {
-      const { socket, ...json } = this
+      const { socket, timeouts, ...json } = this
       return json
    }
 

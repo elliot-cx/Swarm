@@ -16,7 +16,7 @@ export default class OwnerBot extends Bot {
    }
 
    toJSON() {
-      const { socket, ...json } = this
+      const { socket, timeouts, ...json } = this
       return json
    }
 

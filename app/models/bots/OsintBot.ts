@@ -17,7 +17,7 @@ export default class OsintBot extends Bot {
    }
 
    toJSON() {
-      const { socket, data, messages, ...json } = this
+      const { socket, timeouts, data, messages, ...json } = this
       return json
    }
 
