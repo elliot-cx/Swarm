@@ -2,8 +2,7 @@ import { chatterProfile } from "../../chatterProfile";
 import CommandBot from "../CommandBot";
 
 export default {
-
-    needMod: false,
+    needMod: true,
     run(bot: CommandBot) {
         bot.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {
             const unbannable = chatterProfiles.filter((chatter: chatterProfile) => chatter.roles.includes("banned"));

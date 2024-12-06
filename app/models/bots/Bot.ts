@@ -7,6 +7,8 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 import chalk from 'chalk';
 import { RoomEntry } from "../roomEntry";
 import { Socket, io } from "socket.io-client";
+import { faker } from '@faker-js/faker'
+import { env } from "process";
 
 export enum BotStatus {
     CONNECTING = "connecting",
@@ -33,7 +35,8 @@ export enum BotType {
     VIDEO = "video",
     COMMAND = "command",
     OSINT = "osint",
-    POPSAUCE = "popsauce"
+    POPSAUCE = "popsauce",
+    BOMBPARTY = "bombparty"
 }
 
 export function log(string: string) {
@@ -49,12 +52,16 @@ export class Bot {
     image: string | null;
     auth: Authentification | null;
     peerId: number | undefined;
+    timeouts: NodeJS.Timeout[] = [];
     // Enable access properties from key like -> Object[propertyName]
     [key: string]: any;
 
     protected roomCode: string = "";
 
     constructor(name: string) {
+        if (name == "") {
+            name = faker.internet.username();
+        }
         this.id = Utils.randomString();
         this.socket = require('socket.io-client');
         this.token = Utils.randomString();
@@ -97,12 +104,16 @@ export class Bot {
         this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
         // Here you can configure a proxy for ban avoiding (use a rotating proxy / residential for better results)
-        const proxyUrl = process.env.PROXY;
-        const agent: any = proxyUrl ? new HttpsProxyAgent(proxyUrl) : null;
-        this.socket = io(url, {
-            agent: agent,
+        const proxyUrl = env.PROXY;
+        const agent = new HttpsProxyAgent(proxyUrl!);
+        this.socket = require('socket.io-client').connect(url, {
+            agent: proxyUrl ? agent : null,
             transports :  ["websocket"]
         });
+        // this.socket = io(url, {
+        //     agent: agent,
+        //     transports :  ["websocket"]
+        // });
         // Handle sockets events
         this.socket.on("connect", async () => {
             const gcToken = await reCaptcha.resolveCaptcha();
@@ -110,7 +121,7 @@ export class Bot {
                 "roomCode": roomCode,
                 "userToken": this.token,
                 "nickname": this.name,
-                "picture": this.image ? await Utils.compressImage(this.image) : null,
+                "picture": this.image,
                 "auth": BotAuthentificationService.getAuthentification(),
                 "language": "fr-FR",
                 "token": gcToken
@@ -129,11 +140,11 @@ export class Bot {
             this.socket.removeAllListeners();
             // Check if connection got refused or got disconnected
             if (reason != "io client disconnect") {
-                setTimeout(()=>{
+                this.timeouts.push(setTimeout(()=>{
                     if (this.status !== BotStatus.DELETED) {
                         this.connect(roomCode, url)
                     }
-                },10000);
+                },10000));
             }
             if (this.status != BotStatus.CONNECTING) {
                this.setStatus(BotStatus.DISCONNECTED);
@@ -152,23 +163,25 @@ export class Bot {
                 this.setStatus(BotStatus.BANNED);
                 // Auto reconnect the bot when got ban (only works if proxy is active)
                 // TODO: Check if proxy enabled
-                this.connect(this.roomCode,url, wasActive);
             }
-            // TODO: Handle other type of kicked
+            this.connect(this.roomCode,url, wasActive);
         });
         // Log connect error in case for debug
         this.socket.on("connect_error", (err: any) => {
             this.setStatus(BotStatus.DISCONNECTED);
+            // console.log(err);
             log(`The bot [${this.id}] | ${this.name} failed to connect : ${err}`);
             // Auto reconnect
-            this.connect(roomCode, url);
+            this.timeouts.push(setTimeout(()=>{
+                this.connect(roomCode, url);
+            }, 5000));
         });
     }
 
     disconnect() { 
         try {
             if (this.socket) this.socket.close(); 
-        } catch (error) { }
+        } catch (error) {}
     }
 
     start() { 
@@ -185,5 +198,8 @@ export class Bot {
 
     onDelete() {
         this.status = BotStatus.DELETED;
+        this.timeouts.forEach((timeout) => {
+            clearTimeout(timeout);
+        })
     }
 }

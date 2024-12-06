@@ -42,6 +42,9 @@ export default class PopSauceBot extends Bot {
             this.addGameListeners();
             this.socketGame.on("connect", () => {
                this.socketGame.emit("joinGame", roomEntry.gameId, this.roomCode, this.token);
+               if (this.status == BotStatus.ACTIVE) {
+                  this.socketGame.emit("joinRound");
+               }
             });
             break;
          case BotStatus.ACTIVE:
@@ -79,9 +82,11 @@ export default class PopSauceBot extends Bot {
 
       this.socketGame.on("startChallenge", (challenge: PopsauceStartChallenge) => {
          this.hash = challenge.image ? sha256(challenge.image.data) : sha256(challenge.text!);
-         const answer = DataService.getDataInstance("popsauce")[this.dictionnaryLang][this.hash];
+         const answer = this.getAnswer();
          if (answer && this.status == BotStatus.ACTIVE) {
-            this.socketGame.emit("submitGuess", answer);
+            setTimeout(() => {
+               this.socketGame.emit("submitGuess", answer);
+            }, Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000);
          };
       });
 
@@ -90,5 +95,24 @@ export default class PopSauceBot extends Bot {
          answers[this.dictionnaryLang][this.hash] = challenge.source;
          DataService.updateDataInstance("popsauce", answers);
       });
+
+      this.socket.on("chat", (authProfile: any, message: string) => {
+         // Check if the message is not a message sent by the bot himself
+         if (authProfile.peerId != this.peerId) {
+            if (message.startsWith("/help")) {
+               const answer = this.getAnswer();
+               if (answer) {
+                  this.emit("chat", answer);
+               } else {
+                  this.emit("chat", "J'ai pas désolé fréro :(");
+               };
+            }
+         }
+     });
+   }
+
+   private getAnswer(){
+      const answer = DataService.getDataInstance("popsauce")[this.dictionnaryLang][this.hash];
+      return answer;
    }
 };

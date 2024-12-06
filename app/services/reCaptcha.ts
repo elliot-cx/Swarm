@@ -1,9 +1,9 @@
-import puppeteer from 'puppeteer-extra';
+import puppeteer, { VanillaPuppeteer } from 'puppeteer-extra';
 import RandomUserAgent from 'random-useragent';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha';
 import chalk from 'chalk';
-import { Page } from 'puppeteer';
+import { Browser, Page, PuppeteerNode } from 'puppeteer';
 import { createCursor, installMouseHelper } from "ghost-cursor"
 import fetch from 'node-fetch';
 import { Utils } from '../utils/utils';
@@ -20,15 +20,18 @@ function log(string: string) {
  */
 export namespace reCaptcha {
 
-    var browser: any;
+    var browser: Browser;
     var page: Page;
 
     export async function initCaptchaSolver() {
+        if (browser) {
+            browser.close();
+        }
         puppeteer.use(StealthPlugin());
         puppeteer.use(RecaptchaPlugin())
         browser = await puppeteer.launch({
             executablePath: "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-            headless: "new",
+            headless: true,
             args: [
                 `--window-size=${Math.floor(Math.random() * (2000 - 800 + 1) + 800)},${Math.floor(Math.random() * (1200 - 600 + 1) + 600)}`,
                 '--disable-blink-features=AutomationControlled',
@@ -86,7 +89,6 @@ export namespace reCaptcha {
     }
 
     export async function resolveCaptcha() {
-        // await page.waitForFunction()
         try {
             const token = await page.evaluate(`
             new Promise((resolve) => {
@@ -101,6 +103,5 @@ export namespace reCaptcha {
         } catch (error) {
             return null;
         }
-        
     }
 }

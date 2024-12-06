@@ -3,7 +3,6 @@ import { chatterProfile } from "../../chatterProfile";
 import CommandBot from "../CommandBot";
 
 export default {
-
     needMod: false,
     run(bot: CommandBot, authProfile: chatterProfile, args: string[]) {
         switch (args[0]) {

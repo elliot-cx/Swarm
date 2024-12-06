@@ -2,7 +2,6 @@ import { chatterProfile } from "../../chatterProfile";
 import CommandBot from "../CommandBot";
 
 export default {
-
     needMod: true,
     run(bot: CommandBot, authProfile: chatterProfile) {
         bot.emit("getChatterProfiles", (chatterProfiles: chatterProfile[]) => {

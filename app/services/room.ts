@@ -1,13 +1,14 @@
 import { Bot, BotAction, BotType } from "../models/bots/Bot";
+import { JklmService } from "./jklm";
+import { Room } from "../models/room";
 import ResponderBot from "../models/bots/ResponderBot";
 import SpamBot from "../models/bots/SpamBot";
 import TrackerBot from "../models/bots/TrackerBot";
-import { Room } from "../models/room";
 import fetch from "node-fetch";
-import { JklmService } from "./jklm";
 import CommandBot from "../models/bots/CommandBot";
 import OsintBot from "../models/bots/OsintBot";
 import PopSauceBot from "../models/bots/PopSauceBot";
+import BombpartyBot from "../models/bots/BombpartyBot";
 
 // Liste des rooms instanciées
 var rooms: Room[] = [];
@@ -133,6 +134,10 @@ export namespace RoomServices {
                     const popsauceBot = new PopSauceBot(bot.name);
                     room.bots.push(popsauceBot);
                     return popsauceBot.id;
+                case BotType.BOMBPARTY:
+                    const bombpartyBot = new BombpartyBot(bot.name);
+                    room.bots.push(bombpartyBot);
+                    return bombpartyBot.id;
                 case BotType.OSINT:
                     const osintBot = new OsintBot(bot.name, bot.peerId);
                     room.bots.push(osintBot);
