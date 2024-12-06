@@ -80,12 +80,12 @@ export default class BombpartyBot extends Bot {
 
       this.socketGame.on('setMilestone', (milestone) => {
          if (this.status == BotStatus.ACTIVE) {
-            this.socketGame.emit('joinRound');
+            this.socketGame.emit('joinRound')
          }
 
-         this.currentPeerId = milestone.currentPlayerPeerId;
+         this.currentPeerId = milestone.currentPlayerPeerId
          if (this.currentPeerId == this.peerId && BotStatus.ACTIVE) {
-            this.sendWord(milestone.syllable, this.dictionnaryLang);
+            this.sendWord(milestone.syllable, this.dictionnaryLang)
          }
       })
 
@@ -106,7 +106,7 @@ export default class BombpartyBot extends Bot {
 
       this.socketGame.on('nextTurn', (peerId: number, syl: string) => {
          if (peerId == this.peerId && BotStatus.ACTIVE) {
-            this.sendWord(syl, this.dictionnaryLang);
+            this.sendWord(syl, this.dictionnaryLang)
          }
       })
    }
@@ -117,7 +117,7 @@ export default class BombpartyBot extends Bot {
          (w) => w.includes(syl) && !this.usedWords.includes(w)
       )
       if (word) {
-         this.humanType(word);
+         this.humanType(word)
          // this.socketGame.emit('setWord', word, true)
       } else {
          log(`Pas de mot pour la syl ${syl}`)
@@ -134,34 +134,36 @@ export default class BombpartyBot extends Bot {
    }
 
    private async humanType(word: string) {
-      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-      let currentWord = ""; // Mot actuel construit au fur et à mesure
-      await delay(1000 + Math.random() * 1000); // Attente entre les lettres
-  
+      const delay = (ms: number) =>
+         new Promise((resolve) => setTimeout(resolve, ms))
+      let currentWord = '' // Mot actuel construit au fur et à mesure
+      await delay(1000 + Math.random() * 1000) // Attente entre les lettres
+
       for (let i = 0; i < word.length; i++) {
-          const isLastLetter = i === word.length - 1;
-          const correctLetter = word[i];
-  
-          // Probabilité d'erreur
-          if (Math.random() < 0.15) {
-              const randomChar = String.fromCharCode(97 + Math.floor(Math.random() * 26)); // Lettre aléatoire (a-z)
-              
-              // Ajouter la mauvaise lettre
-              currentWord += randomChar;
-              this.socketGame.emit('setWord', currentWord, false);
-              await delay(40 + Math.random() * 120); // Attente entre les lettres
-  
-              // Supprimer la lettre incorrecte
-              currentWord = currentWord.slice(0, -1);
-              this.socketGame.emit('setWord', currentWord, false);
-              await delay(40 + Math.random() * 120); // Attente entre les lettres
-          }
-  
-          // Ajouter la bonne lettre
-          currentWord += correctLetter;
-          this.socketGame.emit('setWord', currentWord, isLastLetter);
-          await delay(50 + Math.random() * 120); // Attente entre les lettres
+         const isLastLetter = i === word.length - 1
+         const correctLetter = word[i]
+
+         // Probabilité d'erreur
+         if (Math.random() < 0.15) {
+            const randomChar = String.fromCharCode(
+               97 + Math.floor(Math.random() * 26)
+            ) // Lettre aléatoire (a-z)
+
+            // Ajouter la mauvaise lettre
+            currentWord += randomChar
+            this.socketGame.emit('setWord', currentWord, false)
+            await delay(40 + Math.random() * 120) // Attente entre les lettres
+
+            // Supprimer la lettre incorrecte
+            currentWord = currentWord.slice(0, -1)
+            this.socketGame.emit('setWord', currentWord, false)
+            await delay(40 + Math.random() * 120) // Attente entre les lettres
+         }
+
+         // Ajouter la bonne lettre
+         currentWord += correctLetter
+         this.socketGame.emit('setWord', currentWord, isLastLetter)
+         await delay(50 + Math.random() * 120) // Attente entre les lettres
       }
-  }
-  
+   }
 }

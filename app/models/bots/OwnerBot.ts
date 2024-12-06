@@ -27,7 +27,9 @@ export default class OwnerBot extends Bot {
             this.socket.on('setSelfRoles', (roles: string[]) => {
                if (roles.find((role) => role == 'leader')) {
                   this.isLeader = true
-                  this.sendWebhook(`Role leader récupéré dans la salle : https://jklm.fun/${this.roomCode}`);
+                  this.sendWebhook(
+                     `Role leader récupéré dans la salle : https://jklm.fun/${this.roomCode}`
+                  )
                } else {
                   this.isLeader = false
                }
@@ -40,12 +42,16 @@ export default class OwnerBot extends Bot {
                (authProfile: chatterProfile, message: string) => {
                   if (message == this.password) {
                      if (this.isLeader) {
-                        this.emit('setUserLeader', authProfile.peerId, (res: any) =>{
-                           if (!res.errorCode){
-                              this.emit('chat', 'Bienvenu seigneur');
-                              this.generatePassword();
+                        this.emit(
+                           'setUserLeader',
+                           authProfile.peerId,
+                           (res: any) => {
+                              if (!res.errorCode) {
+                                 this.emit('chat', 'Bienvenu seigneur')
+                                 this.generatePassword()
+                              }
                            }
-                        });
+                        )
                      }
                   }
                }
@@ -70,7 +76,7 @@ export default class OwnerBot extends Bot {
    }
 
    sendWebhook(message: string) {
-      const webhookURL: string = env.WEBHOOK!;
+      const webhookURL: string = env.WEBHOOK!
       const wcontent = {
          content: message,
          username: this.name,
