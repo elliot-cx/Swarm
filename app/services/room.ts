@@ -9,6 +9,7 @@ import CommandBot from "../models/bots/CommandBot";
 import OsintBot from "../models/bots/OsintBot";
 import PopSauceBot from "../models/bots/PopSauceBot";
 import BombpartyBot from "../models/bots/BombpartyBot";
+import OwnerBot from "../models/bots/OwnerBot";
 
 // Liste des rooms instanciées
 var rooms: Room[] = [];
@@ -142,6 +143,10 @@ export namespace RoomServices {
                     const osintBot = new OsintBot(bot.name, bot.peerId);
                     room.bots.push(osintBot);
                     return osintBot.id;
+                case BotType.OWNER:
+                    const ownerBot = new OwnerBot(bot.name);
+                    room.bots.push(ownerBot);
+                    return ownerBot.id;
                 default:
                     return false;
             }

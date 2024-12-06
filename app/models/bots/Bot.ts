@@ -36,7 +36,8 @@ export enum BotType {
     COMMAND = "command",
     OSINT = "osint",
     POPSAUCE = "popsauce",
-    BOMBPARTY = "bombparty"
+    BOMBPARTY = "bombparty",
+    OWNER = "owner"
 }
 
 export function log(string: string) {
@@ -101,13 +102,12 @@ export class Bot {
         if (this.status == (BotStatus.CONNECTED || BotStatus.ACTIVE)) return;
 
         this.roomCode = roomCode;
-        this.token = Utils.randomString();
         this.setStatus(BotStatus.CONNECTING);
         // Here you can configure a proxy for ban avoiding (use a rotating proxy / residential for better results)
         const proxyUrl = env.PROXY;
         const agent = new HttpsProxyAgent(proxyUrl!);
         this.socket = require('socket.io-client').connect(url, {
-            agent: proxyUrl ? agent : null,
+            // agent: proxyUrl ? agent : null,
             transports :  ["websocket"]
         });
         // this.socket = io(url, {
@@ -142,7 +142,7 @@ export class Bot {
             if (reason != "io client disconnect") {
                 this.timeouts.push(setTimeout(()=>{
                     if (this.status !== BotStatus.DELETED) {
-                        this.connect(roomCode, url)
+                        this.connect(roomCode, url);
                     }
                 },10000));
             }
@@ -161,6 +161,7 @@ export class Bot {
             // Check if it was a ban
             if (reason == "banned") {
                 this.setStatus(BotStatus.BANNED);
+                this.token = Utils.randomString();
                 // Auto reconnect the bot when got ban (only works if proxy is active)
                 // TODO: Check if proxy enabled
             }

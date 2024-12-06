@@ -20,7 +20,7 @@ export default class TrackerBot extends Bot {
     }
 
     toJSON() {
-        const { socket, roomCode,roomsToCheck, ...json } = this;
+        const { socket, roomCode, roomsToCheck, ...json } = this;
         return json;
     }
 
@@ -74,7 +74,6 @@ export default class TrackerBot extends Bot {
             setTimeout(()=>{
                 this.connect(roomToCheck.roomCode, roomToCheck.link);
             },2000);
-            
         }
     }
 }
