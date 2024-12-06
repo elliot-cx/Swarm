@@ -14,6 +14,7 @@ const server = createServer(app);
 app.use(cors())
 app.use(express.static('./app/public'));
 app.use(express.json());
+app.use(express.text())
 app.use("/", router);
 
 app.get("/status", (_,res)=>{

@@ -60,7 +60,7 @@ export class Bot {
 
     constructor(name: string) {
         if (name == "") {
-            name = faker.internet.username();
+            name = faker.internet.username().substring(0,14);
         }
         this.id = Utils.randomString();
         this.socket = require('socket.io-client');

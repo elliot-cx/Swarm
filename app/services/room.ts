@@ -1,4 +1,4 @@
-import { Bot, BotAction, BotType } from "../models/bots/Bot";
+import { Bot, BotAction, BotStatus, BotType } from "../models/bots/Bot";
 import { JklmService } from "./jklm";
 import { Room } from "../models/room";
 import ResponderBot from "../models/bots/ResponderBot";
@@ -200,6 +200,12 @@ export namespace RoomServices {
             default:
                 return false;
         }
+        // Temp
+        if (room.bots.find(bot => bot.status == BotStatus.ACTIVE)) {
+            room.isActive = true;
+        } else {
+            room.isActive = false;
+        }
         return true;
     };
 
@@ -263,6 +269,19 @@ export namespace RoomServices {
         bot.disconnect();
         room.bots = room.bots.filter((bot: Bot) => bot.id != botid);
         bot.onDelete();
+        return true;
+    }
+
+    export const BotMessage = (roomCode: string, botid: string, message: string): boolean => {
+        const room = getRoomByID(roomCode);
+        if (!room) {
+            return false;
+        }
+        const bot = getBot(room, botid);
+        if (!bot) {
+            return false;
+        }
+        bot.emit("chat", message);
         return true;
     }
 }

@@ -37,6 +37,10 @@ router.post("/:id/bot", (req: Request, res: Response) => {
     res.json({ "success": RoomServices.addBot(req.params.id, req.body) })
 });
 
+router.post("/:id/bot/:botToken/message", (req: Request, res: Response) => {
+    res.json({ "success": RoomServices.BotMessage(req.params.id, req.params.botToken, req.body) })
+});
+
 // Modifier les propriétés du BOT
 router.put("/:id/bot/:botToken", (req: Request, res: Response) => {
     res.json({"success" : RoomServices.updateBot(req.params.id, req.params.botToken, req.body)})
