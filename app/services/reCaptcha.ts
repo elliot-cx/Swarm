@@ -31,6 +31,7 @@ export namespace reCaptcha {
       browser = await puppeteer.launch({
          // executablePath:
          //    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+         executablePath: '/usr/bin/google-chrome',
          headless: true,
          args: [
             `--window-size=${Math.floor(
