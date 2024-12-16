@@ -29,8 +29,8 @@ export namespace reCaptcha {
       puppeteer.use(StealthPlugin())
       puppeteer.use(RecaptchaPlugin())
       browser = await puppeteer.launch({
-         executablePath:
-            'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+         // executablePath:
+         //    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
          headless: true,
          args: [
             `--window-size=${Math.floor(
