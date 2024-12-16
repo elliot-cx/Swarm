@@ -35,7 +35,7 @@ app.use('/', (req, res, next) => {
 // Handle HTTP Requests
 server.listen(PORT, async () => {
    console.log(`Server listening at : http://localhost:${PORT}`)
-   require('child_process').exec(`start http://localhost:${PORT}/`);
+   // require('child_process').exec(`start http://localhost:${PORT}/`);
    SocketIOService.initSockets(server)
    reCaptcha.initCaptchaSolver().then(() => (status = 'Ready'))
 })
