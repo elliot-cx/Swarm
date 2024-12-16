@@ -2,6 +2,7 @@ import puppeteer, { VanillaPuppeteer } from 'puppeteer-extra'
 import RandomUserAgent from 'random-useragent'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha'
+import PortalPlugin from 'puppeteer-extra-plugin-portal'
 import chalk from 'chalk'
 import { Browser, Page, PuppeteerNode } from 'puppeteer'
 import { createCursor, installMouseHelper } from 'ghost-cursor'
@@ -28,10 +29,22 @@ export namespace reCaptcha {
       }
       puppeteer.use(StealthPlugin())
       puppeteer.use(RecaptchaPlugin())
+      // add portal plugin
+      puppeteer.use(
+         PortalPlugin({
+            webPortalConfig: {
+               listenOpts: {
+                  port: 6970,
+               },
+               baseUrl: 'http://192.168.1.121:6970',
+            },
+         })
+      )
+
       browser = await puppeteer.launch({
-         // executablePath:
-         //    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-         executablePath: '/usr/bin/google-chrome',
+         executablePath:
+            'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+         // executablePath: '/usr/bin/google-chrome',
          headless: true,
          args: [
             `--window-size=${Math.floor(
@@ -69,9 +82,12 @@ export namespace reCaptcha {
             `--disable-features=AutofillEnableAccountWalletStorage`,
          ],
       })
+      // Open a portal to get a link to it.
+      page = await browser.newPage()
+      const portalUrl = await page.openPortal()
+      console.log('Portal URL:', portalUrl)
       log('Init completed')
       log('Loading JKLM.FUN...')
-      page = await browser.newPage()
       await installMouseHelper(page)
       const cursor = createCursor(page)
       await page.goto('https://jklm.fun/', { waitUntil: 'domcontentloaded' })

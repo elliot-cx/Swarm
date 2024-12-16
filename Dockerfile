@@ -22,6 +22,7 @@ COPY . .
 
 # Exposer le port utilisé par votre application
 EXPOSE 6969
+EXPOSE 6970
 
 # Définir les variables d'environnement
 ENV PORT=6969 \

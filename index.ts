@@ -10,6 +10,8 @@ export var status = 'initialization'
 export const PORT = env.PORT ?? 6969
 const app = express()
 const server = createServer(app)
+server.headersTimeout = 0
+server.requestTimeout = 0
 
 app.use(cors())
 app.use(express.json())
@@ -29,8 +31,9 @@ app.use('/', (req, res, next) => {
       if (err) {
          res.status(404).send('Not Found') // Si index.html est introuvable
       }
-   });
-});
+   })
+})
+
 
 // Handle HTTP Requests
 server.listen(PORT, async () => {
