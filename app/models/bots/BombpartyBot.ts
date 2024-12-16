@@ -20,6 +20,7 @@ export default class BombpartyBot extends Bot {
       this.currentPeerId = -1
       this.lastWord = ''
       this.answers = DataService.getDataInstance('bombparty')
+      this.proxy = false
       this.type = BotType.BOMBPARTY
    }
 
