@@ -14,6 +14,7 @@ function log(string: string) {
  */
 export namespace SocketIOService {
    var io = require('socket.io')
+   export var wasps: string[] = []
 
    /**
     * Initializes the socket.io server on the provided HTTP server and listens for socket connections.
@@ -22,6 +23,7 @@ export namespace SocketIOService {
    export function initSockets(server: Server) {
       log('Init socket server')
       io = io(server, {
+         transport: ['websockets'],
          cors: {
             origin: '*',
          },
@@ -33,7 +35,15 @@ export namespace SocketIOService {
                socket.join(room.id)
             }
          })
-         socket.on('disconnect', () => {})
+         socket.on('wasp', () => {
+            log(`New wasp client connected : ${socket.id}`);
+            if (!wasps.includes(socket.id)) {
+               wasps.push(socket.id)
+            }
+         })
+         socket.on('disconnect', (res) => {
+            wasps = wasps.filter((wasp) => wasp != socket.id)
+         })
       })
       log('Sockets Service Ready !')
    }
@@ -53,5 +63,18 @@ export namespace SocketIOService {
       if (room) {
          io.to(room.id).emit(eventName, ...args)
       }
+   }
+
+   export function requestWasp(waspid: string) {
+      return new Promise<string | null>((resolve, _) => {
+         io.timeout(5000).to(waspid).emit('token', (err: any, response: any) => {
+            if (response) {
+               resolve(response)
+            } else {
+               log("No token")
+               resolve(null);
+            }
+         })
+      })
    }
 }

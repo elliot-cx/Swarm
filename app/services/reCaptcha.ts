@@ -1,14 +1,12 @@
-import puppeteer, { VanillaPuppeteer } from 'puppeteer-extra'
-import RandomUserAgent from 'random-useragent'
+import puppeteer from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha'
 import PortalPlugin from 'puppeteer-extra-plugin-portal'
 import chalk from 'chalk'
-import { Browser, Page, PuppeteerNode } from 'puppeteer'
+import { Browser, Page } from 'puppeteer'
 import { createCursor, installMouseHelper } from 'ghost-cursor'
-import fetch from 'node-fetch'
-import { Utils } from '../utils/utils'
 import { CHAT, GAME_FRAME, JOIN_BUTTON, ROOM } from '../constants/selectors'
+import { SocketIOService } from './sockets'
 
 function log(string: string) {
    console.log(chalk.blue('[reCaptcha]'), string)
@@ -109,16 +107,23 @@ export namespace reCaptcha {
 
    export async function resolveCaptcha() {
       try {
-         const token = await page.evaluate(`
-            new Promise((resolve) => {
-               // This code will be executed within the page context
-               grecaptcha.ready(() => {
-                  grecaptcha.execute('6LdzYGslAAAAACxOZaQA5J0CxlfdJQUdWvJYoAFM', { action: 'joinRoom' }).then((token) => {
-                     resolve(token);
+         const waspsLength = SocketIOService.wasps.length
+         if (waspsLength > 0) {
+            let wasp =
+               SocketIOService.wasps[Math.floor(Math.random() * waspsLength)]
+            return await SocketIOService.requestWasp(wasp);
+         } else {
+            const token = await page.evaluate(`
+               new Promise((resolve) => {
+                  // This code will be executed within the page context
+                  grecaptcha.ready(() => {
+                     grecaptcha.execute('6LdzYGslAAAAACxOZaQA5J0CxlfdJQUdWvJYoAFM', { action: 'joinRoom' }).then((token) => {
+                        resolve(token);
+                     });
                   });
-               });
-            });`)
-         return token
+               });`)
+            return token
+         }
       } catch (error) {
          return null
       }
